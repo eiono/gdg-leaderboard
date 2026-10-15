@@ -1,0 +1,26 @@
+# Node / React
+node_modules/
+web/dist/
+web/.vite/
+*.local
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets and local settings
+.env
+.env.*
+
+# Temporary and test files
+*.tmp
+profile_sample.html
+scraper/inspect_profile.py
+
+# Editors and OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

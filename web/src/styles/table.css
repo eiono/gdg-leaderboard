@@ -1,0 +1,89 @@
+.table-wrap {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: var(--bg);
+}
+
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.col-rank {
+  width: 70px;
+  font-weight: 700;
+  text-align: center !important;
+}
+
+.col-points {
+  width: 100px;
+  font-weight: 700;
+  color: var(--blue);
+  text-align: right !important;
+}
+
+.col-progress {
+  color: var(--muted);
+}
+
+.col-name a {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.row-status {
+  margin-left: 8px;
+}
+
+/* Students who finished every badge */
+.row-locked {
+  background: #f1f8f3;
+}
+
+.row-locked:hover {
+  background: #e6f4ea !important;
+}
+
+.lock-tag {
+  color: var(--green);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .col-rank {
+    width: 44px;
+  }
+
+  .col-points {
+    width: 70px;
+  }
+}

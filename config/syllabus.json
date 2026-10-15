@@ -1,0 +1,108 @@
+{
+  "program": {
+    "name": "Google Cloud Study Program",
+    "start_date": "2026-09-01",
+    "end_date": "2026-12-31"
+  },
+  "fuzzy_threshold": 0.9,
+  "extra_badge_points": 0,
+  "items": [
+    {
+      "id": "compute-basics",
+      "title": "The Basics of Google Cloud Compute",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 4,
+      "url": "https://www.skills.google/course_templates/754"
+    },
+    {
+      "id": "iam-service-accounts",
+      "title": "Configure Service Accounts and IAM Roles for Google Cloud",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 4,
+      "url": "https://www.skills.google/course_templates/702"
+    },
+    {
+      "id": "speech-language-apis",
+      "title": "Implement Speech and Language Solutions with Pre-trained APIs",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 4,
+      "url": "https://www.skills.google/course_templates/700"
+    },
+    {
+      "id": "ai-studio-prototypes",
+      "title": "Develop AI-Powered Prototypes in Google AI Studio",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 0,
+      "url": "https://www.skills.google/course_templates/1426"
+    },
+    {
+      "id": "cloud-vision-images",
+      "title": "Analyze Images with the Cloud Vision API",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 12,
+      "url": "https://www.skills.google/course_templates/633"
+    },
+    {
+      "id": "build-website",
+      "title": "Build a Website on Google Cloud",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 13,
+      "url": "https://www.skills.google/course_templates/638"
+    },
+    {
+      "id": "gemini-enterprise-app",
+      "title": "Create Your First Gemini Enterprise Application",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 0,
+      "url": "https://www.skills.google/course_templates/1586"
+    },
+    {
+      "id": "store-process-manage-data",
+      "title": "Store, Process, and Manage Data on Google Cloud - Console",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 3,
+      "url": "https://www.skills.google/course_templates/658"
+    },
+    {
+      "id": "speech-api",
+      "title": "Using the Google Cloud Speech API",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 4,
+      "url": "https://www.skills.google/course_templates/756"
+    },
+    {
+      "id": "genai-agent-platform",
+      "title": "Explore Generative AI in Agent Platform",
+      "aliases": [],
+      "track": "Skill Badges",
+      "points": 10,
+      "credits_required": 16,
+      "url": "https://www.skills.google/course_templates/959"
+    }
+  ],
+  "track_bonuses": {
+    "Skill Badges": 20
+  },
+  "milestone_bonuses": [
+    { "min_matched": 5, "points": 10 },
+    { "min_matched": 10, "points": 20 }
+  ]
+}

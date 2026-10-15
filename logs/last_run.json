@@ -1,0 +1,57 @@
+{
+  "run_at": "2026-10-15T05:50:13+00:00",
+  "duration_seconds": 549,
+  "students": 519,
+  "scraped_this_run": 519,
+  "locked_students": 2,
+  "status_counts": {
+    "ok": 517,
+    "private": 2
+  },
+  "skipped_sheet_rows": [
+    {
+      "row": 54,
+      "reason": "missing name"
+    },
+    {
+      "row": 184,
+      "reason": "duplicate profile link"
+    },
+    {
+      "row": 273,
+      "reason": "duplicate profile link"
+    },
+    {
+      "row": 328,
+      "reason": "duplicate profile link"
+    },
+    {
+      "row": 329,
+      "reason": "duplicate profile link"
+    },
+    {
+      "row": 330,
+      "reason": "duplicate profile link"
+    },
+    {
+      "row": 494,
+      "reason": "duplicate profile link"
+    },
+    {
+      "row": 512,
+      "reason": "duplicate profile link"
+    }
+  ],
+  "failures": [
+    {
+      "row": 174,
+      "status": "private",
+      "error": "HTTP 403"
+    },
+    {
+      "row": 517,
+      "status": "private",
+      "error": "HTTP 403"
+    }
+  ]
+}

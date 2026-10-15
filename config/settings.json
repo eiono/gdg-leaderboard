@@ -1,0 +1,28 @@
+{
+  "sheet_csv_env": "SHEET_CSV_URL",
+  "name_column": "name",
+  "url_column": "URL",
+
+  "max_workers": 3,
+  "request_delay_seconds": 1.5,
+  "request_timeout_seconds": 20,
+  "max_retries": 2,
+
+  "skip_completed_students": true,
+  "recheck_failed_every_hours": 24,
+
+  "allowed_profile_domains": [
+    "www.skills.google",
+    "skills.google",
+    "www.cloudskillsboost.google",
+    "cloudskillsboost.google"
+  ],
+
+  "user_agent": "Mozilla/5.0 (compatible; CommunityLeaderboardBot/1.0)",
+
+  "paths": {
+    "syllabus": "config/syllabus.json",
+    "output": "web/public/data/leaderboard.json",
+    "log": "logs/last_run.json"
+  }
+}
