@@ -1,8 +1,8 @@
 {
-  "run_at": "2026-10-16T06:34:05+00:00",
-  "duration_seconds": 346,
+  "run_at": "2026-10-16T09:32:21+00:00",
+  "duration_seconds": 353,
   "students": 519,
-  "scraped_this_run": 517,
+  "scraped_this_run": 515,
   "locked_students": 2,
   "status_counts": {
     "ok": 517,
@@ -42,16 +42,5 @@
       "reason": "duplicate profile link"
     }
   ],
-  "failures": [
-    {
-      "row": 174,
-      "status": "private",
-      "error": "HTTP 403"
-    },
-    {
-      "row": 517,
-      "status": "private",
-      "error": "HTTP 403"
-    }
-  ]
+  "failures": []
 }
