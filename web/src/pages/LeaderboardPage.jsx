@@ -1,4 +1,3 @@
-import logo from '../../logo.jpeg'
 import useLeaderboard from '../hooks/useLeaderboard.js'
 import useFilteredStudents from '../hooks/useFilteredStudents.js'
 import Podium from '../components/Podium.jsx'
@@ -32,7 +31,7 @@ export default function LeaderboardPage() {
   return (
     <div>
       <div className="header-container" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <img src={logo} alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+        <img src="/logo.jpeg" alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
         <h1>Leaderboard</h1>
       </div>
       <LastUpdated timestamp={data.last_updated} />
