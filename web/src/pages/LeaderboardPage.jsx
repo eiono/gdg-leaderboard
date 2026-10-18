@@ -30,10 +30,15 @@ export default function LeaderboardPage() {
 
   return (
     <div>
-      <div className="header-container" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <img src="/logo.jpeg" alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-        <h1>Leaderboard</h1>
+      <div style={{ marginBottom: '1rem' }}>
+        <img 
+          src={`${import.meta.env.BASE_URL}logo.jpeg`} 
+          alt="GDG On Campus MCKV Institute of Engineering Logo" 
+          style={{ height: '70px', objectFit: 'contain', display: 'block' }} 
+        />
       </div>
+
+      <h1>Leaderboard</h1>
       <LastUpdated timestamp={data.last_updated} />
 
       {/* Podium always shows the overall top 3, even while searching */}
