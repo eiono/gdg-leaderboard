@@ -1,9 +1,9 @@
 {
-  "run_at": "2026-10-24T15:26:28+00:00",
-  "duration_seconds": 338,
+  "run_at": "2026-10-24T18:26:00+00:00",
+  "duration_seconds": 321,
   "students": 521,
-  "scraped_this_run": 488,
-  "locked_students": 32,
+  "scraped_this_run": 487,
+  "locked_students": 33,
   "status_counts": {
     "ok": 519,
     "private": 2
