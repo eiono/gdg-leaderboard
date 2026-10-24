@@ -1,11 +1,11 @@
 {
-  "run_at": "2026-10-24T06:31:05+00:00",
-  "duration_seconds": 338,
-  "students": 520,
-  "scraped_this_run": 490,
-  "locked_students": 28,
+  "run_at": "2026-10-24T07:29:20+00:00",
+  "duration_seconds": 337,
+  "students": 521,
+  "scraped_this_run": 491,
+  "locked_students": 29,
   "status_counts": {
-    "ok": 518,
+    "ok": 519,
     "private": 2
   },
   "skipped_sheet_rows": [
