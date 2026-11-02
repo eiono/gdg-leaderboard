@@ -390,3 +390,24 @@ button.track-btn {
   font-weight: 600;
   color: var(--red);
 }
+
+.countdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+
+.countdown-timer {
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: #d9534f;
+}
+
+.countdown-ended {
+  color: #6c757d;
+  font-style: italic;
+}
