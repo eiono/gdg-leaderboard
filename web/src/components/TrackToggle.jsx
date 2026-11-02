@@ -17,7 +17,7 @@ export default function TrackToggle({ active = 'student' }) {
         className={`track-btn${active === 'developer' ? ' active' : ''}`}
         aria-current={active === 'developer' ? 'page' : undefined}
       >
-        Developers
+        Faculty
       </Link>
     </nav>
   )
