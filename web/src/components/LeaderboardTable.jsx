@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import LeaderboardRow from './LeaderboardRow.jsx'
 import '../styles/table.css'
 
-const TARGET_DATE = new Date('2026-11-18T00:00:00').getTime()
+const TARGET_DATE = new Date('2026-11-12T00:00:00').getTime()
 
 export default function LeaderboardTable({ students = [], track = 'student' }) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
