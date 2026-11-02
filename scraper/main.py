@@ -2,8 +2,10 @@
 
 Run from the project root:   python scraper/main.py
 Needs the environment variables named in config/settings.json -> tracks.
-Testing: set LIMIT=5 first. Test runs write to *.test files and never touch
-the real leaderboard files.
+Testing:
+  set LIMIT=5          first 5 people only; writes *.test files, never the
+                       real leaderboard files
+  set TRACK=developer  run only one track (student or developer)
 """
 import json
 import os
@@ -87,8 +89,15 @@ def run_track(settings, track, limit):
     # Last run's data: used for locks and as a fallback for failed profiles
     prev_data = load_json(out_path, {})
     prev = {s["slug"]: s for s in prev_data.get("students", []) if "slug" in s}
-    previous_locks = {slug: s["locked"] for slug, s in prev.items()
-                      if s.get("locked")}
+
+    # Each lock remembers the rank it was first published with (prev_rank).
+    # Old files without it fall back to the rank they had in the last run.
+    previous_locks = {
+        slug: {**s["locked"],
+               "prev_rank": s["locked"].get("prev_rank",
+                                            s.get("rank", 10**9))}
+        for slug, s in prev.items() if s.get("locked")
+    }
 
     students, skipped = fetch_students(settings, track["sheet_csv_env"])
     if limit:
@@ -300,16 +309,21 @@ def main():
     if settings is None:
         raise SystemExit("config/settings.json is missing or invalid")
 
-    limit = int(os.environ.get("LIMIT") or 0)  # testing only, e.g. LIMIT=5
+    limit = int(os.environ.get("LIMIT") or 0)   # testing only, e.g. LIMIT=5
+    only = os.environ.get("TRACK", "").strip()  # e.g. TRACK=developer
+    tracks = [t for t in settings["tracks"] if not only or t["id"] == only]
+    if not tracks:
+        raise SystemExit(f"No track named '{only}' in settings.json")
+
     summaries = {}
-    for track in settings["tracks"]:
+    for track in tracks:
         try:
             summaries[track["id"]] = run_track(settings, track, limit)
         except Exception as err:  # one track failing must not stop the other
             print(f"[{track['id']}] FAILED: {err}")
             summaries[track["id"]] = {"aborted": True, "reason": str(err)}
 
-    if not limit:
+    if not limit and not only:
         log_path = os.path.join(ROOT, *settings["paths"]["log"].split("/"))
         write_json(log_path, {"run_at": now_iso(), "tracks": summaries})
 

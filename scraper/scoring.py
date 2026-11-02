@@ -147,8 +147,13 @@ def _last_earned(result: dict) -> str:
 def rank(students: list, syllabus: dict, previous_locks: dict = None) -> list:
     """
     students: [{"name", "slug", "sheet_row", "result"}, ...]
-    previous_locks: {slug: {"completed_on": "...", "locked_at": "..."}}
-                    taken from the previous leaderboard.json
+    previous_locks: {slug: {"completed_on", "locked_at", "prev_rank"}}
+                    taken from the previous leaderboard file.
+
+    Locked students (completed every item) always rank above everyone else:
+      1. earlier completion date first
+      2. same date: whoever was locked in an earlier refresh (prev_rank)
+      3. same date, locked in the same refresh: higher in the sheet first
     """
     previous_locks = previous_locks or {}
     now = datetime.now(timezone.utc).isoformat()
@@ -168,11 +173,13 @@ def rank(students: list, syllabus: dict, previous_locks: dict = None) -> list:
     locked = [s for s in students if s["locked"]]
     in_progress = [s for s in students if not s["locked"]]
 
-    # 2. Locked students: earliest finisher first
+    # 2. Locked students (new locks have no prev_rank yet, so they sort
+    #    after existing locks on the same date)
     locked.sort(key=lambda s: (
         s["locked"]["completed_on"],
-        s["locked"]["locked_at"],
-        s.get("sheet_row", 0),
+        s["locked"].get("prev_rank", 10**9),
+        s.get("sheet_row", 10**9),
+        s["slug"],
     ))
 
     # 3. Everyone else: points, then badges, then earlier progress
@@ -180,10 +187,14 @@ def rank(students: list, syllabus: dict, previous_locks: dict = None) -> list:
         -s["result"]["points"]["total"],
         -len(s["result"]["matched"]),
         _last_earned(s["result"]),
-        s.get("sheet_row", 0),
+        s.get("sheet_row", 10**9),
+        s["slug"],
     ))
 
     ordered = locked + in_progress
     for i, s in enumerate(ordered, start=1):
         s["rank"] = i
+        # Remember the rank a lock was first published with. It never changes.
+        if s["locked"] and "prev_rank" not in s["locked"]:
+            s["locked"]["prev_rank"] = i
     return ordered
