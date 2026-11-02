@@ -286,3 +286,107 @@
   font-size: 0.85rem;
   color: var(--muted);
 }
+
+/* Students / Developers switch */
+.track-toggle {
+  display: inline-flex;
+  padding: 4px;
+  margin: 12px 0 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.track-btn {
+  padding: 8px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.track-btn:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.track-btn.active {
+  background: var(--blue);
+  color: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.track-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Red "Abnormal Activity Detected" label */
+.flag-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #c5221f;
+}
+
+/* Flagged rows stay red even when locked */
+.row-flagged,
+.row-flagged:hover {
+  background: #fdecea !important;
+}
+
+.row-flagged .lock-tag {
+  color: #c5221f;
+}
+
+/* Solution video links and lab links */
+.badge-links {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+.solution-link {
+  font-weight: 600;
+  color: var(--red);
+}
+
+.solution-note {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.lab-link {
+  font-weight: 500;
+}
+
+/* Red banner for flagged entries (Abnormal Activity Detected) */
+.flag-banner {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border: 1px solid #f1b0ac;
+  border-radius: var(--radius);
+  background: #fdecea;
+  color: #c5221f;
+  font-weight: 700;
+}
+
+/* Buttons that use the track-toggle look (used on the About page) */
+button.track-btn {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.about-sol {
+  margin-left: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--red);
+}

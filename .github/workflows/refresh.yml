@@ -2,7 +2,7 @@ name: Refresh leaderboard
 
 on:
   schedule:
-    - cron: "0 */3 * * *"   # every 6 hours (UTC): 5:30, 11:30, 17:30, 23:30 IST
+    - cron: "0 */3 * * *"   # every 3 hours (UTC)
   workflow_dispatch:         # adds a "Run workflow" button in the Actions tab
 
 permissions:
@@ -16,7 +16,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - name: Check out repo
@@ -35,13 +35,16 @@ jobs:
       - name: Run scraper
         env:
           SHEET_CSV_URL: ${{ secrets.SHEET_CSV_URL }}
+          DEV_SHEET_CSV_URL: ${{ secrets.DEV_SHEET_CSV_URL }}
+          STUDENT_SOLUTIONS_CSV_URL: ${{ secrets.STUDENT_SOLUTIONS_CSV_URL }}
+          DEV_SOLUTIONS_CSV_URL: ${{ secrets.DEV_SOLUTIONS_CSV_URL }}
         run: python scraper/main.py
 
       - name: Commit updated data
         run: |
           git config user.name "leaderboard-bot"
           git config user.email "leaderboard-bot@users.noreply.github.com"
-          git add web/public/data/leaderboard.json logs/last_run.json
+          git add web/public/data/leaderboard.json web/public/data/developers.json logs/last_run.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0

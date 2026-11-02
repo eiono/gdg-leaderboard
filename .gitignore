@@ -24,3 +24,6 @@ scraper/inspect_profile.py
 .idea/
 Thumbs.db
 .DS_Store
+
+web/public/data/*.test
+*.tmp

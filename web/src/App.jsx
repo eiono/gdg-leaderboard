@@ -11,10 +11,25 @@ export default function App() {
       <Header />
       <main className="container">
         <Routes>
-          <Route path="/" element={<LeaderboardPage />} />
-          <Route path="/student/:slug" element={<StudentPage />} />
+          {/* Student leaderboard (default) */}
+          <Route path="/" element={<LeaderboardPage track="student" />} />
+          <Route
+            path="/student/:slug"
+            element={<StudentPage track="student" />}
+          />
+
+          {/* Developer leaderboard */}
+          <Route
+            path="/developers"
+            element={<LeaderboardPage track="developer" />}
+          />
+          <Route
+            path="/developer/:slug"
+            element={<StudentPage track="developer" />}
+          />
+
           <Route path="/about" element={<AboutPage />} />
-          <Route path="*" element={<LeaderboardPage />} />
+          <Route path="*" element={<LeaderboardPage track="student" />} />
         </Routes>
       </main>
       <Footer />

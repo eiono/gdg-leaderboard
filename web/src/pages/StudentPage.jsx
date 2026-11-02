@@ -7,11 +7,19 @@ import Loader from '../components/Loader.jsx'
 import { formatDate, formatNumber } from '../lib/format.js'
 import '../styles/components.css'
 
-export default function StudentPage() {
+// One detail page for both tracks. App.jsx passes track="student" or
+// track="developer".
+export default function StudentPage({ track = 'student' }) {
   const { slug } = useParams()
-  const { data, loading, error } = useLeaderboard()
+  const { data, loading, error } = useLeaderboard(track)
 
-  if (loading) return <Loader text="Loading student..." />
+  const backTo = track === 'developer' ? '/developers' : '/'
+  const backText =
+    track === 'developer'
+      ? '← Back to developer leaderboard'
+      : '← Back to student leaderboard'
+
+  if (loading) return <Loader text="Loading..." />
 
   if (error) {
     return (
@@ -28,33 +36,36 @@ export default function StudentPage() {
   if (!student) {
     return (
       <div className="message-box">
-        Student not found.
+        Not found.
         <br />
-        <Link to="/">Back to leaderboard</Link>
+        <Link to={backTo}>{backText}</Link>
       </div>
     )
   }
 
-  const { name, rank, progress, points, status, locked, profile_url } = student
+  const { name, rank, progress, points, status, locked, flag, profile_url } =
+    student
 
   return (
     <div>
-      <Link to="/" className="back-link">
-        ← Back to leaderboard
+      <Link to={backTo} className="back-link">
+        {backText}
       </Link>
+
+      {flag && <div className="flag-banner">⚠ {flag}</div>}
 
       <div className="card student-header">
         <div>
           <h1 className="student-name">{name}</h1>
           {locked && (
             <p className="student-locked">
-              🔒 Completed all badges on {formatDate(locked.completed_on)}
+              🔒 Completed all labs on {formatDate(locked.completed_on)}
             </p>
           )}
           {status && status !== 'ok' && <StatusPill status={status} />}
           {profile_url && (
             <p className="student-link">
-              <a href={profile_url} target="_blank" rel="noreferrer">
+              <a href={profile_url} target="_blank" rel="noopener noreferrer">
                 View public profile ↗
               </a>
             </p>
@@ -72,7 +83,7 @@ export default function StudentPage() {
           </div>
           <div className="stat">
             <span className="stat-value">{progress}</span>
-            <span className="stat-label">Badges</span>
+            <span className="stat-label">Labs</span>
           </div>
         </div>
       </div>
@@ -82,7 +93,7 @@ export default function StudentPage() {
         <h3 className="badge-heading">Points breakdown</h3>
         <ul>
           <li>
-            <span>Syllabus badges</span>
+            <span>Lab badges</span>
             <strong>{formatNumber(points?.syllabus)}</strong>
           </li>
           <li>
@@ -96,7 +107,11 @@ export default function StudentPage() {
         </ul>
       </div>
 
-      <BadgeList matched={student.matched} missing={student.missing} />
+      <BadgeList
+        matched={student.matched}
+        missing={student.missing}
+        missingItems={student.missing_items}
+      />
 
       <LastUpdated timestamp={data.last_updated} />
     </div>

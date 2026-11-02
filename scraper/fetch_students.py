@@ -1,4 +1,4 @@
-"""Downloads the published Google Sheet (CSV) and returns clean student rows.
+"""Downloads a published Google Sheet (CSV) and returns clean student rows.
 
 Each student gets:
   name, profile_url, slug, sheet_row
@@ -62,12 +62,25 @@ def download_csv(url: str, settings: dict) -> str:
             last_error = err
             time.sleep(2 * (attempt + 1))
 
-    raise RuntimeError(f"Could not download the student Sheet: {last_error}")
+    raise RuntimeError(f"Could not download the Sheet: {last_error}")
 
 
-def fetch_students(settings: dict):
-    """Returns (students, skipped)."""
-    env_name = settings["sheet_csv_env"]
+def pick_header(headers: dict, wanted):
+    """headers = {lowercase name: original name}. `wanted` is one name or a
+    list of accepted names. Returns the original header name or None."""
+    if isinstance(wanted, str):
+        wanted = [wanted]
+    for name in wanted:
+        found = headers.get(name.strip().lower())
+        if found:
+            return found
+    return None
+
+
+def fetch_students(settings: dict, env_name: str = None):
+    """Returns (students, skipped). env_name = name of the environment
+    variable that holds the Sheet's CSV link."""
+    env_name = env_name or settings["sheet_csv_env"]
     csv_url = os.environ.get(env_name, "").strip()
     if not csv_url:
         raise RuntimeError(
@@ -80,13 +93,14 @@ def fetch_students(settings: dict):
 
     # Match headers ignoring case and extra spaces
     headers = {(h or "").strip().lower(): h for h in (reader.fieldnames or [])}
-    name_key = headers.get(settings["name_column"].lower())
-    url_key = headers.get(settings["url_column"].lower())
+    name_key = pick_header(headers, settings["name_column"])
+    url_key = pick_header(headers, settings["url_column"])
 
     if not name_key or not url_key:
         raise RuntimeError(
-            f"Sheet must have columns '{settings['name_column']}' and "
-            f"'{settings['url_column']}'. Found: {list(headers.values())}"
+            f"Sheet in {env_name} needs a name column "
+            f"({settings['name_column']}) and a link column "
+            f"({settings['url_column']}). Found: {list(headers.values())}"
         )
 
     students, skipped, seen = [], [], set()

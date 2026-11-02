@@ -1,7 +1,13 @@
 {
   "sheet_csv_env": "SHEET_CSV_URL",
-  "name_column": "name",
-  "url_column": "URL",
+  "name_column": ["User Name", "Name"],
+  "url_column": ["Google Skills Profile URL", "URL"],
+
+  "solutions_columns": {
+    "course_url": "Links",
+    "title": "Topic",
+    "solution": "Solution link"
+  },
 
   "max_workers": 3,
   "request_delay_seconds": 1.5,
@@ -19,6 +25,25 @@
   ],
 
   "user_agent": "Mozilla/5.0 (compatible; CommunityLeaderboardBot/1.0)",
+
+  "tracks": [
+    {
+      "id": "student",
+      "label": "Students",
+      "sheet_csv_env": "SHEET_CSV_URL",
+      "solutions_csv_env": "STUDENT_SOLUTIONS_CSV_URL",
+      "syllabus": "config/syllabus.json",
+      "output": "web/public/data/leaderboard.json"
+    },
+    {
+      "id": "developer",
+      "label": "Developers",
+      "sheet_csv_env": "DEV_SHEET_CSV_URL",
+      "solutions_csv_env": "DEV_SOLUTIONS_CSV_URL",
+      "syllabus": "config/syllabus_developer.json",
+      "output": "web/public/data/developers.json"
+    }
+  ],
 
   "paths": {
     "syllabus": "config/syllabus.json",

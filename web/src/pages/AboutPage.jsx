@@ -1,24 +1,15 @@
+import { useState } from 'react'
 import useLeaderboard from '../hooks/useLeaderboard.js'
 import Loader from '../components/Loader.jsx'
 import { formatDate } from '../lib/format.js'
 import '../styles/components.css'
 
-// The syllabus, bonuses and program dates are written into leaderboard.json
-// by the scraper (data.syllabus), so this page always matches the real scoring.
+// The syllabus, bonuses and program dates are written into the leaderboard
+// JSON by the scraper (data.syllabus), so this page always matches the real
+// scoring. The switch picks which track's rules are shown.
 export default function AboutPage() {
-  const { data, loading, error } = useLeaderboard()
-
-  if (loading) return <Loader text="Loading..." />
-
-  if (error) {
-    return (
-      <div className="message-box error">
-        Could not load data. Please try again later.
-        <br />
-        <small>{error}</small>
-      </div>
-    )
-  }
+  const [track, setTrack] = useState('student')
+  const { data, loading, error } = useLeaderboard(track)
 
   const syllabus = data?.syllabus
   const items = syllabus?.items || []
@@ -33,9 +24,9 @@ export default function AboutPage() {
       <section className="card about-section">
         <h2>How it works</h2>
         <p>
-          Each student's public Google Cloud Skills profile is checked
-          automatically every 6 hours. Badges that match the syllabus below
-          earn points, and the leaderboard updates after each check.
+          Each participant's public Google Cloud Skills profile is checked
+          automatically every 3 hours. Badges that match the labs below earn
+          points, and the leaderboard updates after each check.
         </p>
         {program && (
           <p>
@@ -46,61 +37,102 @@ export default function AboutPage() {
         )}
       </section>
 
-      <section className="card about-section">
-        <h2>Syllabus and points</h2>
-        {items.length === 0 ? (
-          <p className="badge-empty">Syllabus will appear after the next update.</p>
-        ) : (
-          <ul className="about-list">
-            {items.map((item) => (
-              <li key={item.id}>
-                <span>
-                  {item.url ? (
-                    <a href={item.url} target="_blank" rel="noreferrer">
-                      {item.title}
-                    </a>
-                  ) : (
-                    item.title
-                  )}
-                </span>
-                <strong>{item.points} pts</strong>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <div className="track-toggle" role="group" aria-label="Choose track">
+        <button
+          type="button"
+          className={`track-btn${track === 'student' ? ' active' : ''}`}
+          onClick={() => setTrack('student')}
+        >
+          Students
+        </button>
+        <button
+          type="button"
+          className={`track-btn${track === 'developer' ? ' active' : ''}`}
+          onClick={() => setTrack('developer')}
+        >
+          Developers
+        </button>
+      </div>
 
-      {(trackBonuses.length > 0 || milestones.length > 0) && (
-        <section className="card about-section">
-          <h2>Bonus points</h2>
-          <ul className="about-list">
-            {trackBonuses.map(([track, pts]) => (
-              <li key={track}>
-                <span>Complete every badge in "{track}"</span>
-                <strong>+{pts} pts</strong>
-              </li>
-            ))}
-            {milestones.map((m) => (
-              <li key={m.min_matched}>
-                <span>Reach {m.min_matched} syllabus badges</span>
-                <strong>+{m.points} pts</strong>
-              </li>
-            ))}
-          </ul>
-          <p className="about-note">
-            Only the highest milestone reached is counted.
-          </p>
-        </section>
+      {loading && <Loader text="Loading..." />}
+
+      {!loading && error && (
+        <div className="message-box error">
+          {error}
+          <br />
+          <small>Please try again later.</small>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <>
+          <section className="card about-section">
+            <h2>Labs and points</h2>
+            {items.length === 0 ? (
+              <p className="badge-empty">Labs will appear after the next update.</p>
+            ) : (
+              <ul className="about-list">
+                {items.map((item) => (
+                  <li key={item.id}>
+                    <span>
+                      {item.url ? (
+                        <a href={item.url} target="_blank" rel="noopener noreferrer">
+                          {item.title}
+                        </a>
+                      ) : (
+                        item.title
+                      )}
+                      {item.solution?.url && (
+                        <a
+                          className="about-sol"
+                          href={item.solution.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          ▶ Solution
+                        </a>
+                      )}
+                    </span>
+                    <strong>{item.points} pts</strong>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          {(trackBonuses.length > 0 || milestones.length > 0) && (
+            <section className="card about-section">
+              <h2>Bonus points</h2>
+              <ul className="about-list">
+                {trackBonuses.map(([name, pts]) => (
+                  <li key={name}>
+                    <span>Complete every lab in "{name}"</span>
+                    <strong>+{pts} pts</strong>
+                  </li>
+                ))}
+                {milestones.map((m) => (
+                  <li key={m.min_matched}>
+                    <span>Reach {m.min_matched} labs</span>
+                    <strong>+{m.points} pts</strong>
+                  </li>
+                ))}
+              </ul>
+              <p className="about-note">
+                Only the highest milestone reached is counted.
+              </p>
+            </section>
+          )}
+        </>
       )}
 
       <section className="card about-section">
         <h2>Ranking rules</h2>
         <ul className="about-bullets">
-          <li>Students are ranked by total points.</li>
+          <li>Participants are ranked by total points.</li>
           <li>Ties are broken by who reached their latest badge first.</li>
           <li>
-            🔒 Once a student completes <strong>every</strong> syllabus badge,
-            their position is locked. Locked students are ordered by who
+            🔒 Once someone completes <strong>every</strong> lab, their
+            position is locked. Locked participants are ordered by who
             finished first and are never overtaken.
           </li>
         </ul>

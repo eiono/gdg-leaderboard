@@ -1,5 +1,6 @@
 import useLeaderboard from '../hooks/useLeaderboard.js'
 import useFilteredStudents from '../hooks/useFilteredStudents.js'
+import TrackToggle from '../components/TrackToggle.jsx'
 import Podium from '../components/Podium.jsx'
 import SearchBar from '../components/SearchBar.jsx'
 import SortControls from '../components/SortControls.jsx'
@@ -8,25 +9,18 @@ import LastUpdated from '../components/LastUpdated.jsx'
 import Loader from '../components/Loader.jsx'
 import '../styles/components.css'
 
-export default function LeaderboardPage() {
-  const { data, loading, error } = useLeaderboard()
+// One page for both leaderboards. App.jsx passes track="student" or
+// track="developer".
+export default function LeaderboardPage({ track = 'student' }) {
+  const { data, loading, error } = useLeaderboard(track)
   const students = data?.students || []
 
-  // Hooks must run on every render, so this sits above the early returns
+  // Hooks must run on every render, so this sits above everything else
   const { filtered, search, setSearch, sortBy, setSortBy } =
     useFilteredStudents(students)
 
-  if (loading) return <Loader text="Loading leaderboard..." />
-
-  if (error) {
-    return (
-      <div className="message-box error">
-        Could not load the leaderboard. Please try again later.
-        <br />
-        <small>{error}</small>
-      </div>
-    )
-  }
+  const title =
+    track === 'developer' ? 'Developer Leaderboard' : 'Student Leaderboard'
 
   return (
     <div>
@@ -38,18 +32,37 @@ export default function LeaderboardPage() {
         />
       </div>
 
-      <h1>Leaderboard</h1>
-      <LastUpdated timestamp={data.last_updated} />
+      <h1>{title}</h1>
 
-      {/* Podium always shows the overall top 3, even while searching */}
-      <Podium students={students} />
+      {/* The switch stays visible while loading or on error, so a visitor
+          can always move to the other leaderboard */}
+      <TrackToggle active={track} />
 
-      <div className="controls">
-        <SearchBar value={search} onChange={setSearch} />
-        <SortControls value={sortBy} onChange={setSortBy} />
-      </div>
+      {loading && <Loader text="Loading leaderboard..." />}
 
-      <LeaderboardTable students={filtered} />
+      {!loading && error && (
+        <div className="message-box error">
+          {error}
+          <br />
+          <small>Please try again later.</small>
+        </div>
+      )}
+
+      {!loading && !error && data && (
+        <>
+          <LastUpdated timestamp={data.last_updated} />
+
+          {/* Podium always shows the overall top 3, even while searching */}
+          <Podium students={students} track={track} />
+
+          <div className="controls">
+            <SearchBar value={search} onChange={setSearch} />
+            <SortControls value={sortBy} onChange={setSortBy} />
+          </div>
+
+          <LeaderboardTable students={filtered} track={track} />
+        </>
+      )}
 
       {/* Footer / Credits Section */}
       <footer style={{ 

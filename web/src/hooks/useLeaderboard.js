@@ -1,35 +1,36 @@
 import { useEffect, useState } from 'react'
 import { fetchLeaderboard } from '../lib/api.js'
 
-// Loads the leaderboard JSON once when a page opens.
+// Loads the leaderboard JSON for one track ('student' or 'developer').
 // Returns: { data, loading, error }
-export default function useLeaderboard() {
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+// Called with no argument it loads the student leaderboard, so pages that
+// have not been updated yet keep working.
+export default function useLeaderboard(track = 'student') {
+  const [state, setState] = useState({ data: null, loading: true, error: null })
 
   useEffect(() => {
     let cancelled = false
+    setState({ data: null, loading: true, error: null })
 
-    fetchLeaderboard()
+    fetchLeaderboard(track)
       .then((json) => {
-        if (!cancelled) {
-          setData(json)
-          setLoading(false)
-        }
+        if (!cancelled) setState({ data: json, loading: false, error: null })
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(err.message || 'Something went wrong')
-          setLoading(false)
+          setState({
+            data: null,
+            loading: false,
+            error: err.message || 'Something went wrong',
+          })
         }
       })
 
-    // Stops state updates if the user leaves the page mid-load
+    // Ignore a late response if the user switched tracks or left the page
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [track])
 
-  return { data, loading, error }
+  return state
 }
