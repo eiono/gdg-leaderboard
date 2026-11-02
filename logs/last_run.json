@@ -1,46 +1,35 @@
 {
-  "run_at": "2026-11-02T12:57:47+00:00",
-  "duration_seconds": 304,
-  "students": 521,
-  "scraped_this_run": 450,
-  "locked_students": 72,
-  "status_counts": {
-    "ok": 519,
-    "private": 2
-  },
-  "skipped_sheet_rows": [
-    {
-      "row": 54,
-      "reason": "missing name"
+  "run_at": "2026-11-02T13:48:11+00:00",
+  "tracks": {
+    "student": {
+      "duration_seconds": 299,
+      "students": 497,
+      "scraped_this_run": 423,
+      "locked_students": 72,
+      "status_counts": {
+        "ok": 495,
+        "private": 2
+      },
+      "solutions_error": null,
+      "skipped_sheet_rows": [],
+      "failures": []
     },
-    {
-      "row": 184,
-      "reason": "duplicate profile link"
-    },
-    {
-      "row": 273,
-      "reason": "duplicate profile link"
-    },
-    {
-      "row": 328,
-      "reason": "duplicate profile link"
-    },
-    {
-      "row": 329,
-      "reason": "duplicate profile link"
-    },
-    {
-      "row": 330,
-      "reason": "duplicate profile link"
-    },
-    {
-      "row": 494,
-      "reason": "duplicate profile link"
-    },
-    {
-      "row": 512,
-      "reason": "duplicate profile link"
+    "developer": {
+      "duration_seconds": 14,
+      "students": 14,
+      "scraped_this_run": 14,
+      "locked_students": 0,
+      "status_counts": {
+        "ok": 14
+      },
+      "solutions_error": null,
+      "skipped_sheet_rows": [
+        {
+          "row": 11,
+          "reason": "duplicate profile link"
+        }
+      ],
+      "failures": []
     }
-  ],
-  "failures": []
+  }
 }
