@@ -1,0 +1,25 @@
+// Swag tiers. Highest first. To change a threshold, edit it here.
+export const TIERS = [
+  { level: 'tier2', label: 'Tier 2', reward: 'DevKit + T-shirt', labs: 10 },
+  { level: 'tier1', label: 'Tier 1', reward: 'Water Bottle', labs: 5 },
+]
+
+const LOWEST = TIERS[TIERS.length - 1]
+
+// Works out a student's tier from the data the scraper already saves.
+// A locked student has completed every lab, so they are Tier 2.
+export function getTier(student) {
+  const done = student?.matched?.length ?? 0
+
+  if (student?.locked) return TIERS[0]
+
+  const reached = TIERS.find((t) => done >= t.labs)
+  if (reached) return reached
+
+  return {
+    level: 'none',
+    label: 'Not eligible',
+    reward: null,
+    labs: LOWEST.labs,
+  }
+}

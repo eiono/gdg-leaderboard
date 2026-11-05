@@ -21,7 +21,7 @@ export default function LeaderboardPage({ track = 'student' }) {
     useFilteredStudents(students)
 
   const title =
-    track === 'developer' ? 'Developer Leaderboard' : 'Student Leaderboard'
+    track === 'developer' ? 'Faculty Leaderboard' : 'Student Leaderboard'
 
   return (
     <div>
@@ -62,7 +62,7 @@ export default function LeaderboardPage({ track = 'student' }) {
           <Podium students={students} track={track} />
 
           <div className="controls">
-            <SearchBar value={search} onChange={setSearch} />
+            <SearchBar value={search} onChange={setSearch} track={track} />
             <SortControls value={sortBy} onChange={setSortBy} />
           </div>
 

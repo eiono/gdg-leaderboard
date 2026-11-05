@@ -87,3 +87,59 @@
     width: 70px;
   }
 }
+
+/* ---------- Tier Status column ---------- */
+.col-tier {
+  min-width: 190px;
+}
+
+.tier-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Tier 2 (DevKit + T-shirt): green */
+.tier-tier2 {
+  background: #e6f4ea;
+  border-color: #b7e1c1;
+  color: #137333;
+}
+
+/* Tier 1 (Water Bottle): yellow */
+.tier-tier1 {
+  background: #fef7e0;
+  border-color: #f5dc8a;
+  color: #8a5a00;
+}
+
+/* Not eligible yet: plain white */
+.tier-none {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tier-none-pill {
+  background: #ffffff;
+  border-color: var(--border);
+  color: var(--muted);
+}
+
+.tier-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Flagged entries are under review */
+/* Flagged entries keep their tier, but in red.
+   This comes after the green and yellow rules so red wins. */
+.tier-pill.tier-flagged {
+  background: #fdecea;
+  border-color: #f1b0ac;
+  color: #c5221f;
+}

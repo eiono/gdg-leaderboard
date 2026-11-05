@@ -15,7 +15,7 @@ export default function LastUpdated({ timestamp }) {
 
   return (
     <p className="last-updated" title={formatDateTime(timestamp)}>
-      Updated {timeAgo(timestamp)} · refreshes every 6 hours
+      Updated {timeAgo(timestamp)} · refreshes every 3 hours
     </p>
   )
 }

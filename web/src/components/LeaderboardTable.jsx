@@ -60,6 +60,7 @@ export default function LeaderboardTable({ students = [], track = 'student' }) {
                 {track === 'developer' ? 'Developer' : 'Student'}
               </th>
               <th className="col-progress">Badges</th>
+              <th className="col-tier">Tier Status</th>
               <th className="col-points">Points</th>
             </tr>
           </thead>
