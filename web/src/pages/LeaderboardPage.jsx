@@ -1,6 +1,7 @@
 import useLeaderboard from '../hooks/useLeaderboard.js'
 import useFilteredStudents from '../hooks/useFilteredStudents.js'
 import TrackToggle from '../components/TrackToggle.jsx'
+import UpdateCounter from '../components/UpdateCounter.jsx' // NEW
 import Podium from '../components/Podium.jsx'
 import SearchBar from '../components/SearchBar.jsx'
 import SortControls from '../components/SortControls.jsx'
@@ -37,6 +38,11 @@ export default function LeaderboardPage({ track = 'student' }) {
       {/* The switch stays visible while loading or on error, so a visitor
           can always move to the other leaderboard */}
       <TrackToggle active={track} />
+
+      {/* NEW: countdown to the next update, or "Updating..." while one runs.
+          It does not depend on the leaderboard data, so it also shows while
+          the data is loading. */}
+      <UpdateCounter />
 
       {loading && <Loader text="Loading leaderboard..." />}
 

@@ -1,6 +1,8 @@
 import { Link, NavLink } from 'react-router-dom'
 
-export default function Header() {
+// onOpenSwags is passed in by App.jsx and reopens the swags / tiers / rules
+// popup. If it is missing, the button is simply not shown.
+export default function Header({ onOpenSwags }) {
   return (
     <header className="header">
       <div className="header-inner">
@@ -16,6 +18,15 @@ export default function Header() {
         <nav className="nav">
           <NavLink to="/">Leaderboard</NavLink>
           <NavLink to="/about">About</NavLink>
+          {onOpenSwags && (
+            <button
+              type="button"
+              className="swag-open-btn"
+              onClick={onOpenSwags}
+            >
+              🎁 Swags &amp; Rules
+            </button>
+          )}
         </nav>
       </div>
     </header>
