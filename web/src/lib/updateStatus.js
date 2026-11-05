@@ -97,14 +97,16 @@ export async function fetchUpdateStatus(signal) {
 }
 
 // 8040000 ms -> "2h 14m", 845000 -> "14m 05s", 42000 -> "42s"
+// 8040123 ms -> "2h 14m 03s", 845000 -> "14m 05s", 42000 -> "42s"
 export function formatCountdown(ms) {
   const total = Math.max(0, Math.floor(ms / 1000))
   const h = Math.floor(total / 3600)
   const m = Math.floor((total % 3600) / 60)
   const s = total % 60
+  const pad = (n) => String(n).padStart(2, '0')
 
-  if (h > 0) return `${h}h ${String(m).padStart(2, '0')}m`
-  if (m > 0) return `${m}m ${String(s).padStart(2, '0')}s`
+  if (h > 0) return `${h}h ${pad(m)}m ${pad(s)}s`
+  if (m > 0) return `${m}m ${pad(s)}s`
   return `${s}s`
 }
 

@@ -715,3 +715,8 @@ button.track-btn {
     animation: none;
   }
 }
+
+/* Keep the countdown steady while the seconds tick */
+.update-label {
+  font-variant-numeric: tabular-nums;
+}
