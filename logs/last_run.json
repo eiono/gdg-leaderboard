@@ -1,21 +1,32 @@
 {
-  "run_at": "2026-11-06T03:51:29+00:00",
+  "run_at": "2026-11-06T07:04:30+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 273,
+      "duration_seconds": 283,
       "students": 497,
-      "scraped_this_run": 387,
-      "locked_students": 108,
+      "scraped_this_run": 389,
+      "locked_students": 111,
       "status_counts": {
         "ok": 495,
         "private": 2
       },
       "solutions_error": null,
       "skipped_sheet_rows": [],
-      "failures": []
+      "failures": [
+        {
+          "row": 275,
+          "status": "private",
+          "error": "HTTP 403"
+        },
+        {
+          "row": 438,
+          "status": "private",
+          "error": "HTTP 403"
+        }
+      ]
     },
     "developer": {
-      "duration_seconds": 9,
+      "duration_seconds": 10,
       "students": 14,
       "scraped_this_run": 12,
       "locked_students": 2,
