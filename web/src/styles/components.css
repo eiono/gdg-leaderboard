@@ -837,3 +837,120 @@ button.track-btn {
     display: inline-block;
   }
 }
+
+/* ---------- Prize spots (inside the update box) ---------- */
+.update-counter {
+  flex-wrap: wrap;
+}
+
+.spots {
+  flex-basis: 100%;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spots-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.spots-main {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.spots-main--closed {
+  color: #c5221f;
+}
+
+.spots-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.spots-bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.spots-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+  transition: width 0.4s ease;
+}
+
+.spots-fill--full {
+  background: var(--red);
+}
+
+.spots-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spots-fill {
+    transition: none;
+  }
+}
+
+/* ---------- Scrolling notice below the navbar ---------- */
+.notice-bar {
+  padding: 6px 12px;
+  background: var(--surface); /* plain white, same as the navbar */
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.notice-viewport {
+  overflow: hidden;
+}
+
+/* Two identical copies side by side, moved left by exactly one copy,
+   so the loop never jumps */
+.notice-track {
+  display: flex;
+  width: max-content;
+  animation: notice-scroll var(--notice-duration, 70s) linear infinite;
+  will-change: transform;
+}
+
+.notice-item {
+  flex: none;
+  box-sizing: border-box;
+  min-width: 100vw; /* fills very wide screens too */
+  padding-right: 4rem; /* gap before the text comes round again */
+  white-space: nowrap;
+}
+
+/* Hidden from the eye, read by screen readers */
+.notice-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes notice-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

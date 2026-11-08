@@ -1,19 +1,89 @@
+import { memo } from 'react'
 import useUpdateStatus from '../hooks/useUpdateStatus.js'
+import useSpotCount from '../hooks/useSpotCount.js'
 import {
   formatClock,
   formatCountdown,
   formatElapsed,
   UPDATE_INTERVAL_HOURS,
 } from '../lib/updateStatus.js'
+import { FIRST_TIER_LABS } from '../lib/tiers.js'
 
 // An update normally takes 6-10 minutes. Past this, say it is taking longer.
 const LONG_RUN_MS = 15 * 60 * 1000
 
-// Shows the countdown to the next update, or "Updating..." while one runs.
+// The "spots left" section. The 250 spots are shared by students and faculty,
+// so the count covers both lists. memo() keeps it from redrawing every second
+// when the countdown above it ticks.
+const Spots = memo(function Spots({ students, track, lastUpdated }) {
+  const { ready, shown, left, total, closed, partial } = useSpotCount({
+    track,
+    students,
+    lastUpdated,
+  })
+
+  if (!ready) return null // this tab's data has not loaded yet
+
+  const percent = Math.min(100, Math.round((shown / total) * 100))
+  const otherList = track === 'developer' ? 'student' : 'faculty'
+
+  return (
+    <div className="spots">
+      {closed ? (
+        <span className="spots-main spots-main--closed">
+          {total}/{total} (Limit Exceeded Prize Spot Closed)
+        </span>
+      ) : (
+        <div className="spots-row">
+          <span className="spots-main">Spots left: {left}</span>
+          <span className="spots-count">
+            {shown} / {total} filled
+          </span>
+        </div>
+      )}
+
+      <div
+        className="spots-bar"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={shown}
+        aria-label="Prize spots filled"
+      >
+        <div
+          className={`spots-fill${closed ? ' spots-fill--full' : ''}`}
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+
+      <span className="spots-note">
+        Counts students and faculty together who completed {FIRST_TIER_LABS} or
+        more labs
+      </span>
+
+      {partial && (
+        <span className="update-warn">
+          The {otherList} list could not be loaded, so this number may be lower
+          than the real total.
+        </span>
+      )}
+    </div>
+  )
+})
+
+// Shows the countdown to the next update (or "Updating..." while one runs)
+// and the prize spots left.
 //   lastUpdated  the `last_updated` text from the leaderboard data
 //   onPublished  called when new data has gone live, so the page can reload
+//   students     the list of people from the data (for the spots count)
+//   track        'student' or 'developer'
 // Use it once, on the leaderboard page.
-export default function UpdateCounter({ lastUpdated, onPublished }) {
+export default function UpdateCounter({
+  lastUpdated,
+  onPublished,
+  students,
+  track = 'student',
+}) {
   const {
     now,
     nextAt,
@@ -82,6 +152,8 @@ export default function UpdateCounter({ lastUpdated, onPublished }) {
           </span>
         )}
       </div>
+
+      <Spots students={students} track={track} lastUpdated={lastUpdated} />
     </div>
   )
 }

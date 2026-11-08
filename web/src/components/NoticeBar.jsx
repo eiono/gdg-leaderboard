@@ -6,8 +6,8 @@ const NOTICE_TEXT =
   'The leaderboard is only for tracking college participants’ data; after completion, we will verify and match the details with the data in the Google , and any discrepancy may result in profile rejection, after which the data in the Google  will be considered final.'
 
 // Scroll speed in pixels per second. A smaller number is slower.
-const SPEED_PHONE = 8
-const SPEED_DESKTOP = 10
+const SPEED_PHONE = 30
+const SPEED_DESKTOP = 45
 
 function pickSpeed() {
   try {
@@ -20,11 +20,9 @@ function pickSpeed() {
 }
 
 // Slow right-to-left scrolling notice, shown just below the header.
-// Pauses on hover (desktop) and with the Pause button (phones, keyboards).
 export default function NoticeBar() {
   const itemRef = useRef(null)
   const [seconds, setSeconds] = useState(70)
-  const [paused, setPaused] = useState(false)
 
   // The same speed on every screen: duration = text width / speed
   useEffect(() => {
@@ -58,7 +56,7 @@ export default function NoticeBar() {
 
       <div className="notice-viewport" aria-hidden="true">
         <div
-          className={`notice-track${paused ? ' is-paused' : ''}`}
+          className="notice-track"
           style={{ '--notice-duration': `${seconds}s` }}
         >
           <span className="notice-item" ref={itemRef}>
@@ -67,16 +65,6 @@ export default function NoticeBar() {
           <span className="notice-item">{NOTICE_TEXT}</span>
         </div>
       </div>
-
-      <button
-        type="button"
-        className="notice-toggle"
-        onClick={() => setPaused((p) => !p)}
-        aria-pressed={paused}
-        aria-label={paused ? 'Resume scrolling notice' : 'Pause scrolling notice'}
-      >
-        {paused ? 'Play' : 'Pause'}
-      </button>
     </div>
   )
 }

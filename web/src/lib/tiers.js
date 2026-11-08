@@ -23,3 +23,17 @@ export function getTier(student) {
     labs: LOWEST.labs,
   }
 }
+
+// Total swag spots, shared by students and faculty together.
+// Change 250 if the number changes.
+export const TOTAL_SPOTS = 250
+
+// Labs needed for the first tier (5), taken from TIERS above
+export const FIRST_TIER_LABS = LOWEST.labs
+
+// How many people in one list have reached the first tier (5+ labs)
+export function countQualified(students = []) {
+  return students.filter(
+    (s) => (s?.matched?.length ?? 0) >= FIRST_TIER_LABS || s?.locked
+  ).length
+}

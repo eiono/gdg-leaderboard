@@ -42,7 +42,7 @@ export default function LeaderboardPage({ track = 'student' }) {
       {/* NEW: countdown to the next update, or "Updating..." while one runs.
           It does not depend on the leaderboard data, so it also shows while
           the data is loading. */}
-      <UpdateCounter lastUpdated={data?.last_updated} onPublished={reload} />
+            <UpdateCounter lastUpdated={data?.last_updated} onPublished={reload} students={data?.students} track={track}/>
 
       {loading && <Loader text="Loading leaderboard..." />}
 
