@@ -13,7 +13,7 @@ import '../styles/components.css'
 // One page for both leaderboards. App.jsx passes track="student" or
 // track="developer".
 export default function LeaderboardPage({ track = 'student' }) {
-  const { data, loading, error } = useLeaderboard(track)
+  const { data, loading, error, reload } = useLeaderboard(track)
   const students = data?.students || []
 
   // Hooks must run on every render, so this sits above everything else
@@ -42,7 +42,7 @@ export default function LeaderboardPage({ track = 'student' }) {
       {/* NEW: countdown to the next update, or "Updating..." while one runs.
           It does not depend on the leaderboard data, so it also shows while
           the data is loading. */}
-      <UpdateCounter />
+      <UpdateCounter lastUpdated={data?.last_updated} onPublished={reload} />
 
       {loading && <Loader text="Loading leaderboard..." />}
 

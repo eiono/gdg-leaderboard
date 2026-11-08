@@ -321,23 +321,13 @@
   outline-offset: 2px;
 }
 
-/* Red "Abnormal Activity Detected" label */
+/* "Duplicate ID" label under the name */
 .flag-label {
   display: block;
   margin-top: 2px;
   font-size: 0.75rem;
-  font-weight: 700;
-  color: #c5221f;
-}
-
-/* Flagged rows stay red even when locked */
-.row-flagged,
-.row-flagged:hover {
-  background: #fdecea !important;
-}
-
-.row-flagged .lock-tag {
-  color: #c5221f;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 /* Solution video links and lab links */
@@ -364,15 +354,15 @@
   font-weight: 500;
 }
 
-/* Red banner for flagged entries (Abnormal Activity Detected) */
+/* Note at the top of the person's page */
 .flag-banner {
   margin-bottom: 12px;
   padding: 10px 14px;
-  border: 1px solid #f1b0ac;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: #fdecea;
-  color: #c5221f;
-  font-weight: 700;
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 600;
 }
 
 /* Buttons that use the track-toggle look (used on the About page) */
@@ -719,4 +709,131 @@ button.track-btn {
 /* Keep the countdown steady while the seconds tick */
 .update-label {
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Scrolling notice below the navbar ---------- */
+.notice-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #fff8e1;
+  border-bottom: 1px solid #f5dc8a;
+  color: #5f4300;
+  font-size: 0.9rem;
+}
+
+.notice-viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Two identical copies side by side, moved left by exactly one copy,
+   so the loop never jumps */
+.notice-track {
+  display: flex;
+  width: max-content;
+  animation: notice-scroll var(--notice-duration, 70s) linear infinite;
+  will-change: transform;
+}
+
+.notice-track.is-paused {
+  animation-play-state: paused;
+}
+
+@media (hover: hover) {
+  .notice-viewport:hover .notice-track {
+    animation-play-state: paused;
+  }
+}
+
+.notice-item {
+  flex: none;
+  box-sizing: border-box;
+  min-width: 100vw; /* fills very wide screens too */
+  padding-right: 4rem; /* gap before the text comes round again */
+  white-space: nowrap;
+}
+
+.notice-toggle {
+  flex: none;
+  padding: 2px 12px;
+  border: 1px solid #f5dc8a;
+  border-radius: 999px;
+  background: #ffffff;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notice-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Hidden from the eye, read by screen readers */
+.notice-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes notice-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* People who ask their device to reduce motion get the text standing
+   still, wrapped over a few lines */
+@media (prefers-reduced-motion: reduce) {
+  .notice-track {
+    width: auto;
+    animation: none;
+  }
+
+  .notice-item {
+    min-width: 0;
+    padding-right: 0;
+    white-space: normal;
+  }
+
+  .notice-item + .notice-item,
+  .notice-toggle {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice-track {
+    width: max-content;
+    animation: notice-scroll var(--notice-duration, 70s) linear infinite;
+  }
+
+  .notice-track.is-paused {
+    animation-play-state: paused;
+  }
+
+  .notice-item {
+    min-width: 100vw;
+    padding-right: 4rem;
+    white-space: nowrap;
+  }
+
+  .notice-item + .notice-item {
+    display: block;
+  }
+
+  .notice-toggle {
+    display: inline-block;
+  }
 }

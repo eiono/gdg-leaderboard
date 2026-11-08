@@ -134,12 +134,3 @@
   font-size: 0.75rem;
   color: var(--muted);
 }
-
-/* Flagged entries are under review */
-/* Flagged entries keep their tier, but in red.
-   This comes after the green and yellow rules so red wins. */
-.tier-pill.tier-flagged {
-  background: #fdecea;
-  border-color: #f1b0ac;
-  color: #c5221f;
-}

@@ -6,10 +6,7 @@ on:
     paths:
       - "web/**"
       - ".github/workflows/deploy.yml"
-  workflow_run:
-    workflows: ["Refresh leaderboard"]   # must match the name in refresh.yml
-    types: [completed]
-  workflow_dispatch:
+  workflow_dispatch:   # also started by refresh.yml after a real update
 
 permissions:
   contents: read
@@ -22,8 +19,6 @@ concurrency:
 
 jobs:
   build:
-    # For refresh-triggered runs, deploy only if the refresh succeeded
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo

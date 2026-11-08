@@ -2,11 +2,12 @@ name: Refresh leaderboard
 
 on:
   schedule:
-    - cron: "0 */3 * * *"   # every 3 hours (UTC)
-  workflow_dispatch:         # adds a "Run workflow" button in the Actions tab
+    - cron: "*/15 * * * *"   # checks every 15 min; it only updates when due
+  workflow_dispatch:         # manual "Run workflow" always updates
 
 permissions:
-  contents: write            # needed to commit the updated JSON
+  contents: write            # commit the updated data
+  actions: write             # start the deploy after an update
 
 # Never let two refreshes run at the same time
 concurrency:
@@ -22,7 +23,63 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
+      # Decides whether this run should update. A manual run always does.
+      # A scheduled run only does when the last update is 3+ hours old,
+      # so a manual update restarts the 3 hour clock.
+      - name: Check if an update is due
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python3 - <<'EOF'
+          import json, os
+          from datetime import datetime, timezone
+
+          INTERVAL_HOURS = 3        # keep in sync with updateStatus.js
+          RETRY_AFTER_FAIL_MIN = 30
+
+          def read(path):
+              try:
+                  with open(path, encoding="utf-8") as f:
+                      return json.load(f)
+              except Exception:
+                  return {}
+
+          def age_minutes(iso):
+              t = datetime.fromisoformat(iso)
+              if t.tzinfo is None:
+                  t = t.replace(tzinfo=timezone.utc)
+              return (datetime.now(timezone.utc) - t).total_seconds() / 60
+
+          due, reason = True, "unknown"
+          if os.environ.get("EVENT_NAME") == "workflow_dispatch":
+              reason = "manual run"
+          else:
+              try:
+                  age = age_minutes(read("web/public/data/leaderboard.json")["last_updated"])
+                  due = age >= INTERVAL_HOURS * 60
+                  reason = f"last update {age:.0f} min ago"
+              except Exception as err:
+                  reason = f"could not read last update ({err})"
+
+              # After a failed run, wait before trying again
+              log = read("logs/last_run.json")
+              try:
+                  failed = any(t.get("aborted") for t in log.get("tracks", {}).values())
+                  since = age_minutes(log["run_at"])
+                  if due and failed and since < RETRY_AFTER_FAIL_MIN:
+                      due = False
+                      reason += f"; last attempt failed {since:.0f} min ago, waiting"
+              except Exception:
+                  pass
+
+          print(reason, "-> updating" if due else "-> skipping")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write("due=" + ("true" if due else "false") + "\n")
+          EOF
+
       - name: Set up Python
+        if: steps.gate.outputs.due == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -30,9 +87,11 @@ jobs:
           cache-dependency-path: scraper/requirements.txt
 
       - name: Install dependencies
+        if: steps.gate.outputs.due == 'true'
         run: pip install -r scraper/requirements.txt
 
       - name: Run scraper
+        if: steps.gate.outputs.due == 'true'
         env:
           SHEET_CSV_URL: ${{ secrets.SHEET_CSV_URL }}
           DEV_SHEET_CSV_URL: ${{ secrets.DEV_SHEET_CSV_URL }}
@@ -40,7 +99,11 @@ jobs:
           DEV_SOLUTIONS_CSV_URL: ${{ secrets.DEV_SOLUTIONS_CSV_URL }}
         run: python scraper/main.py
 
+      # Also runs after a failed scrape, so the log records the failed
+      # attempt and the next check waits instead of retrying every 15 min.
       - name: Commit updated data
+        id: commit
+        if: ${{ always() && steps.gate.outputs.due == 'true' }}
         run: |
           git config user.name "leaderboard-bot"
           git config user.email "leaderboard-bot@users.noreply.github.com"
@@ -49,6 +112,18 @@ jobs:
             echo "No changes to commit."
             exit 0
           fi
+          data_changed=false
+          if ! git diff --cached --quiet -- web/public/data; then
+            data_changed=true
+          fi
           git commit -m "Refresh leaderboard data"
           git pull --rebase
           git push
+          echo "data_changed=$data_changed" >> "$GITHUB_OUTPUT"
+
+      # Publish whenever new data was saved, even if one of the two lists failed
+      - name: Publish the site
+        if: ${{ always() && steps.commit.outputs.data_changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref ${{ github.ref_name }}

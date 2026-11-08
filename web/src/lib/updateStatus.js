@@ -5,13 +5,16 @@
 export const GITHUB_OWNER = 'eiono'
 export const GITHUB_REPO = 'gdg-leaderboard'
 
-// Must match the cron line in .github/workflows/refresh.yml ("0 */3 * * *").
-// It only lines up with the real schedule if it divides 24 (1, 2, 3, 4, 6...).
+// Must match INTERVAL_HOURS in .github/workflows/refresh.yml
 export const UPDATE_INTERVAL_HOURS = 3
 
-// Workflow names, exactly as written on the "name:" line of each file.
+// Must match the cron line in refresh.yml ("*/15 * * * *")
+export const CHECK_EVERY_MINUTES = 15
+
+// Workflow and step names, exactly as written in the two workflow files
 const REFRESH_WORKFLOW = 'Refresh leaderboard'
 const DEPLOY_WORKFLOW = 'Deploy site'
+const WORK_STEPS = ['Set up Python', 'Install dependencies', 'Run scraper']
 
 const ACTIVE = new Set([
   'queued',
@@ -21,82 +24,112 @@ const ACTIVE = new Set([
   'pending',
 ])
 
-const STEP_MS = UPDATE_INTERVAL_HOURS * 60 * 60 * 1000
+const INTERVAL_MS = UPDATE_INTERVAL_HOURS * 60 * 60 * 1000
+const API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`
 
-// The scheduled slots sit on fixed UTC clock times (00:00, 03:00, 06:00, ...),
-// which is 05:30, 08:30, 11:30, ... in IST. Epoch time starts at UTC midnight,
-// so rounding to a multiple of the interval gives the same slots.
-export function previousScheduledUpdate(now = Date.now()) {
-  return Math.floor(now / STEP_MS) * STEP_MS
+// Next update = last update + 3 hours. Accepts the ISO text from
+// leaderboard.json or a number of milliseconds. Returns null if unknown.
+export function nextUpdateAt(lastUpdated) {
+  if (!lastUpdated) return null
+  const t =
+    typeof lastUpdated === 'number' ? lastUpdated : Date.parse(lastUpdated)
+  return Number.isNaN(t) ? null : t + INTERVAL_MS
 }
 
-export function nextScheduledUpdate(now = Date.now()) {
-  return previousScheduledUpdate(now) + STEP_MS
-}
-
-// Asks GitHub what is running. Returns one of:
-//   { phase: 'updating',   startedAt, manual }   the scraper is running
-//   { phase: 'publishing', startedAt }           the site is being redeployed
-//   { phase: 'idle',       lastRefresh }         nothing running
-//   null                                         GitHub could not be reached
-//                                                (offline, rate limit, ...)
-export async function fetchUpdateStatus(signal) {
-  const url =
-    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}` +
-    '/actions/runs?per_page=15'
-
-  let res
+async function getJson(url, signal) {
   try {
-    res = await fetch(url, {
+    const res = await fetch(url, {
       signal,
       headers: { Accept: 'application/vnd.github+json' },
     })
+    if (!res.ok) return null
+    return await res.json()
   } catch {
     return null
-  }
-  if (!res.ok) return null
-
-  let json
-  try {
-    json = await res.json()
-  } catch {
-    return null
-  }
-
-  // GitHub lists the newest runs first
-  const runs = json.workflow_runs || []
-  const startOf = (r) => Date.parse(r.run_started_at || r.created_at)
-
-  const refreshRuns = runs.filter((r) => r.name === REFRESH_WORKFLOW)
-  const deployRuns = runs.filter((r) => r.name === DEPLOY_WORKFLOW)
-
-  const activeRefresh = refreshRuns.find((r) => ACTIVE.has(r.status))
-  if (activeRefresh) {
-    return {
-      phase: 'updating',
-      startedAt: startOf(activeRefresh),
-      manual: activeRefresh.event === 'workflow_dispatch',
-    }
-  }
-
-  const activeDeploy = deployRuns.find((r) => ACTIVE.has(r.status))
-  if (activeDeploy) {
-    return { phase: 'publishing', startedAt: startOf(activeDeploy) }
-  }
-
-  const lastDone = refreshRuns.find((r) => r.status === 'completed')
-  return {
-    phase: 'idle',
-    lastRefresh: lastDone
-      ? {
-          finishedAt: Date.parse(lastDone.updated_at),
-          ok: lastDone.conclusion === 'success',
-        }
-      : null,
   }
 }
 
-// 8040000 ms -> "2h 14m", 845000 -> "14m 05s", 42000 -> "42s"
+const startOf = (run) => Date.parse(run.run_started_at || run.created_at)
+
+// Tells a real update apart from a 15-minute check that found nothing to do.
+//   'real'     the update steps are running or have run
+//   'skipped'  the check decided it was not due yet
+//   'unknown'  too early to tell (the check is still deciding)
+async function classifyRefreshRun(run, signal) {
+  // A manual "Run workflow" always updates
+  if (run.event === 'workflow_dispatch') return 'real'
+
+  const json = await getJson(`${API}/actions/runs/${run.id}/jobs`, signal)
+  const job = json?.jobs?.[0]
+  if (!job) return 'unknown'
+
+  const work = (job.steps || []).filter((s) => WORK_STEPS.includes(s.name))
+
+  const ran = work.some(
+    (s) =>
+      s.status === 'in_progress' ||
+      (s.status === 'completed' && s.conclusion !== 'skipped')
+  )
+  if (ran) return 'real'
+
+  const allSkipped =
+    work.length === WORK_STEPS.length &&
+    work.every((s) => s.status === 'completed' && s.conclusion === 'skipped')
+  return allSkipped ? 'skipped' : 'unknown'
+}
+
+// Asks GitHub what is happening. Returns one of:
+//   { phase: 'updating',   startedAt, manual }   the scraper is running
+//   { phase: 'publishing', startedAt }           new data is being published
+//   { phase: 'idle', checking, lastFailureAt }   nothing running
+//        checking: true   a check is running and has not decided yet, so look
+//                         again in a few seconds
+//        lastFailureAt    when the last failed update attempt ended (or null)
+//   null                                         GitHub could not be reached
+export async function fetchUpdateStatus(signal) {
+  const json = await getJson(`${API}/actions/runs?per_page=30`, signal)
+  if (!json) return null
+
+  // GitHub lists the newest runs first
+  const runs = json.workflow_runs || []
+  const refreshRuns = runs.filter((r) => r.name === REFRESH_WORKFLOW)
+
+  // 1. Is an update running? (at most one runs and one waits at a time)
+  let checking = false
+  for (const run of refreshRuns.filter((r) => ACTIVE.has(r.status))) {
+    const kind = await classifyRefreshRun(run, signal)
+    if (kind === 'real') {
+      return {
+        phase: 'updating',
+        startedAt: startOf(run),
+        manual: run.event === 'workflow_dispatch',
+      }
+    }
+    if (kind === 'unknown') checking = true
+  }
+
+  // 2. Is new data being published? Only deploys started by an update (or
+  //    by hand) count, not deploys caused by a code change.
+  const deploy = runs.find(
+    (r) =>
+      r.name === DEPLOY_WORKFLOW &&
+      r.event === 'workflow_dispatch' &&
+      ACTIVE.has(r.status)
+  )
+  if (deploy) return { phase: 'publishing', startedAt: startOf(deploy) }
+
+  // 3. Nothing running. Remember a recent failed attempt so the page can say
+  //    that the data shown is older than it should be.
+  const failed = refreshRuns.find(
+    (r) => r.status === 'completed' && r.conclusion === 'failure'
+  )
+  return {
+    phase: 'idle',
+    checking,
+    lastFailureAt: failed ? Date.parse(failed.updated_at) : null,
+  }
+}
+
 // 8040123 ms -> "2h 14m 03s", 845000 -> "14m 05s", 42000 -> "42s"
 export function formatCountdown(ms) {
   const total = Math.max(0, Math.floor(ms / 1000))

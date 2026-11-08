@@ -52,7 +52,7 @@ export default function StudentPage({ track = 'student' }) {
         {backText}
       </Link>
 
-      {flag && <div className="flag-banner">⚠ {flag}</div>}
+      {flag && <div className="flag-banner">ℹ {flag}</div>}
 
       <div className="card student-header">
         <div>

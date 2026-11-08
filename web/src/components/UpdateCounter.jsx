@@ -10,8 +10,10 @@ import {
 const LONG_RUN_MS = 15 * 60 * 1000
 
 // Shows the countdown to the next update, or "Updating..." while one runs.
+//   lastUpdated  the `last_updated` text from the leaderboard data
+//   onPublished  called when new data has gone live, so the page can reload
 // Use it once, on the leaderboard page.
-export default function UpdateCounter() {
+export default function UpdateCounter({ lastUpdated, onPublished }) {
   const {
     now,
     nextAt,
@@ -19,12 +21,14 @@ export default function UpdateCounter() {
     phase,
     startedAt,
     manual,
-    lastRefresh,
+    lastFailureAt,
     available,
-  } = useUpdateStatus()
+  } = useUpdateStatus({ lastUpdated, onPublished })
 
   const elapsed = startedAt ? now - startedAt : 0
-  const lastFailed = available && lastRefresh && lastRefresh.ok === false
+  const dataTime = lastUpdated ? Date.parse(lastUpdated) : 0
+  const lastFailed =
+    available && lastFailureAt && dataTime && lastFailureAt > dataTime
 
   let label
   let detail = null
@@ -38,12 +42,15 @@ export default function UpdateCounter() {
           (manual ? ' · manual update' : '')
   } else if (phase === 'publishing') {
     label = 'Publishing new data…'
-    detail = 'Going live in a minute or two.'
+    detail = 'The leaderboard will refresh by itself.'
   } else if (phase === 'due') {
     label = 'Update due, starting shortly…'
-  } else {
+    detail = 'Updates are checked every few minutes, so this can take a moment.'
+  } else if (nextAt) {
     label = `Next update in ${formatCountdown(msToNext)}`
-    detail = `About ${formatClock(nextAt)} IST · every ${UPDATE_INTERVAL_HOURS} hours`
+    detail = `About ${formatClock(nextAt)} IST · ${UPDATE_INTERVAL_HOURS} hours after the last update`
+  } else {
+    label = 'Checking the update time…'
   }
 
   const busy = phase === 'updating' || phase === 'publishing' || phase === 'due'
@@ -56,8 +63,8 @@ export default function UpdateCounter() {
       />
 
       <div className="update-text">
-        {/* Only this line is announced to screen readers, and only when the
-            phase changes, not on every tick of the countdown */}
+        {/* Only the changing phase is announced to screen readers, not
+            every tick of the countdown */}
         <span className="update-label">
           {busy ? (
             <span aria-live="polite">{label}</span>
@@ -68,10 +75,10 @@ export default function UpdateCounter() {
 
         {detail && <span className="update-detail">{detail}</span>}
 
-        {phase === 'waiting' && lastFailed && (
+        {(phase === 'waiting' || phase === 'due') && lastFailed && (
           <span className="update-warn">
-            The last update did not finish, so the data shown is from an
-            earlier one.
+            The last update attempt did not finish, so this data is older than
+            it should be. It will try again automatically.
           </span>
         )}
       </div>
