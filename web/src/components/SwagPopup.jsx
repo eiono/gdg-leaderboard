@@ -14,6 +14,7 @@ const EXTRA_INFO = [
   'Swags are for eligible participants only. Organizers may ask you to verify your identity (for example with your college ID) when swags are handed out.',
   'Skill badges are official Google Cloud credentials. You can share them on LinkedIn and add them to your resume.',
   'Keep the name on your Skills profile the same as the name you registered with.',
+  'Swags are subject to change. The swags shown above are as per the community notification, and the image is for illustration only, so the actual items may differ.',
 ]
 
 // Popup that shows the swags / tiers / rules (text plus web/public/popup.png).

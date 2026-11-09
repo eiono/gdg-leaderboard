@@ -29,7 +29,7 @@ export function getTier(student) {
 export const TOTAL_SPOTS = 250
 
 // Labs needed for the first tier (5), taken from TIERS above
-export const FIRST_TIER_LABS = LOWEST.labs
+export const FIRST_TIER_LABS = TIERS[0].labs
 
 // How many people in one list have reached the first tier (5+ labs)
 export function countQualified(students = []) {
