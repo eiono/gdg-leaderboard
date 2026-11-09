@@ -1,26 +1,21 @@
 {
-  "run_at": "2026-11-09T06:53:47+00:00",
+  "run_at": "2026-11-09T07:40:57+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 219,
-      "students": 497,
-      "scraped_this_run": 329,
-      "locked_students": 177,
+      "duration_seconds": 216,
+      "students": 498,
+      "scraped_this_run": 319,
+      "locked_students": 181,
       "status_counts": {
-        "ok": 495,
+        "ok": 496,
         "private": 2
       },
       "solutions_error": null,
-      "skipped_sheet_rows": [
-        {
-          "row": 498,
-          "reason": "duplicate profile link"
-        }
-      ],
+      "skipped_sheet_rows": [],
       "failures": []
     },
     "developer": {
-      "duration_seconds": 10,
+      "duration_seconds": 11,
       "students": 14,
       "scraped_this_run": 12,
       "locked_students": 2,
