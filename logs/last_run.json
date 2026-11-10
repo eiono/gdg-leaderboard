@@ -1,13 +1,13 @@
 {
-  "run_at": "2026-11-10T04:30:04+00:00",
+  "run_at": "2026-11-10T07:08:31+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 188,
-      "students": 498,
+      "duration_seconds": 200,
+      "students": 499,
       "scraped_this_run": 279,
-      "locked_students": 218,
+      "locked_students": 224,
       "status_counts": {
-        "ok": 496,
+        "ok": 497,
         "private": 2
       },
       "solutions_error": null,
@@ -15,10 +15,10 @@
       "failures": []
     },
     "developer": {
-      "duration_seconds": 12,
+      "duration_seconds": 10,
       "students": 14,
       "scraped_this_run": 12,
-      "locked_students": 2,
+      "locked_students": 3,
       "status_counts": {
         "ok": 14
       },
