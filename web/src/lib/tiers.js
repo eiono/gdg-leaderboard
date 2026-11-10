@@ -11,6 +11,15 @@ const LOWEST = TIERS[TIERS.length - 1]
 export function getTier(student) {
   const done = student?.matched?.length ?? 0
 
+  if (student?.suspended) {
+    return {
+      level: 'none',
+      label: 'Not eligible',
+      reward: null,
+      labs: LOWEST.labs,
+    }
+  }
+
   if (student?.locked) return TIERS[0]
 
   const reached = TIERS.find((t) => done >= t.labs)
@@ -34,6 +43,8 @@ export const FIRST_TIER_LABS = LOWEST.labs
 // How many people in one list have reached the first tier (5+ labs)
 export function countQualified(students = []) {
   return students.filter(
-    (s) => (s?.matched?.length ?? 0) >= FIRST_TIER_LABS || s?.locked
+    (s) =>
+      !s?.suspended &&
+      ((s?.matched?.length ?? 0) >= FIRST_TIER_LABS || s?.locked)
   ).length
 }

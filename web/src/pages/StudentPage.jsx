@@ -43,7 +43,7 @@ export default function StudentPage({ track = 'student' }) {
     )
   }
 
-  const { name, rank, progress, points, status, locked, flag, profile_url } =
+  const { name, rank, progress, points, status, locked, flag, profile_url, suspended } =
     student
 
   return (
@@ -53,6 +53,11 @@ export default function StudentPage({ track = 'student' }) {
       </Link>
 
       {flag && <div className="flag-banner">ℹ {flag}</div>}
+      {suspended && (
+        <div className="suspended-banner">
+          Suspended: broke the code of conduct. Not ranked.
+        </div>
+      )}
 
       <div className="card student-header">
         <div>
@@ -74,7 +79,7 @@ export default function StudentPage({ track = 'student' }) {
 
         <div className="student-stats">
           <div className="stat">
-            <span className="stat-value">#{rank}</span>
+            <span className="stat-value">{suspended ? '–' : `#${rank}`}</span>
             <span className="stat-label">Rank</span>
           </div>
           <div className="stat">

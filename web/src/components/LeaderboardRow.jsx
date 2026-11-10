@@ -9,6 +9,10 @@ import { getTier } from '../lib/tiers.js'
 function TierCell({ student }) {
   const tier = getTier(student)
 
+  if (student.suspended) {
+    return <span className="tier-pill tier-none-pill">Not eligible</span>
+  }
+
   if (tier.level === 'none') {
     return (
       <span className="tier-none">
@@ -31,15 +35,20 @@ function TierCell({ student }) {
 // One table row. `rank` is always the official rank from the scraper,
 // so it stays correct even when the list is searched or re-sorted.
 export default function LeaderboardRow({ student, track = 'student' }) {
-  const { rank, slug, name, progress, points, status, locked, flag } = student
+  const { rank, slug, name, progress, points, status, locked, flag, suspended } =
+    student
 
-  const rowClass = [locked ? 'row-locked' : '', flag ? 'row-flagged' : '']
+  const rowClass = [
+    locked ? 'row-locked' : '',
+    flag ? 'row-flagged' : '',
+    suspended ? 'row-suspended' : '',
+  ]
     .filter(Boolean)
     .join(' ')
 
   return (
     <tr className={rowClass}>
-      <td className="col-rank">{rank}</td>
+      <td className="col-rank">{suspended ? '' : rank}</td>
 
       <td className="col-name">
         <Link to={`/${track}/${slug}`}>{name}</Link>
@@ -49,6 +58,11 @@ export default function LeaderboardRow({ student, track = 'student' }) {
           </span>
         )}
         {flag && <span className="flag-label">{flag}</span>}
+        {suspended && (
+          <span className="suspended-reason">
+            Reason: Violation of the MCKVIE Code of Conduct (Rank Withdrawn)
+          </span>
+        )}
       </td>
 
       <td className="col-progress">
@@ -68,7 +82,14 @@ export default function LeaderboardRow({ student, track = 'student' }) {
         <TierCell student={student} />
       </td>
 
-      <td className="col-points">{formatNumber(points?.total)}</td>
+      <td className="col-points">
+        <div className="points-wrap">
+          <span>{formatNumber(points?.total)}</span>
+          {suspended && (
+            <span className="suspended-label">Permanently Suspended</span>
+          )}
+        </div>
+      </td>
     </tr>
   )
 }

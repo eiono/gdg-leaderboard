@@ -954,3 +954,37 @@ button.track-btn {
     transform: translateX(-50%);
   }
 }
+
+.row-suspended td {
+  background: #fdecea;
+}
+
+.row-suspended .col-points {
+  position: relative;
+  padding-bottom: 2.2em;
+}
+
+.points-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25em;
+}
+
+.suspended-label {
+  color: #c5221f;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-align: right;
+  line-height: 1.2;
+}
+
+.suspended-reason {
+  display: block;
+  margin-top: 0.25em;
+  color: #c5221f;
+  font-weight: 600;
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+

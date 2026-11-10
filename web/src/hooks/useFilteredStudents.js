@@ -16,6 +16,7 @@ export default function useFilteredStudents(students = []) {
 
     // 2. Sort (copy first so the original list is never changed)
     list = [...list]
+    const pos = (s) => s.listRank ?? s.rank ?? 1e9
 
     if (sortBy === 'name') {
       list.sort((a, b) => a.name.localeCompare(b.name))
@@ -23,11 +24,11 @@ export default function useFilteredStudents(students = []) {
       list.sort(
         (a, b) =>
           (b.matched?.length || 0) - (a.matched?.length || 0) ||
-          a.rank - b.rank
+          pos(a) - pos(b)
       )
     } else {
-      // Default: official rank (points, then who finished earlier)
-      list.sort((a, b) => a.rank - b.rank)
+      // Default: official position (suspended rows keep their place)
+      list.sort((a, b) => pos(a) - pos(b))
     }
 
     return list

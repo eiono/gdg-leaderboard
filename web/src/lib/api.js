@@ -1,3 +1,5 @@
+import { applySuspensions } from './suspended.js'
+
 // Loads the leaderboard JSON written by the scraper.
 // track: 'student' (leaderboard.json) or 'developer' (developers.json)
 // BASE_URL keeps the path correct locally and on GitHub Pages.
@@ -28,7 +30,7 @@ export async function fetchLeaderboard(track = 'student') {
   // HTML page instead of a 404, so check what actually came back.
   const text = await res.text()
   try {
-    return JSON.parse(text)
+    return applySuspensions(JSON.parse(text), track)
   } catch {
     throw notPublished
   }
