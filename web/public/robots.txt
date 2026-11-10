@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://eiono.github.io/gdg-leaderboard/sitemap.xml
