@@ -34,7 +34,7 @@ function TierCell({ student }) {
 
 // One table row. `rank` is always the official rank from the scraper,
 // so it stays correct even when the list is searched or re-sorted.
-export default function LeaderboardRow({ student, track = 'student' }) {
+export default function LeaderboardRow({ student, track = 'student', limited = false }) {
   const { rank, slug, name, progress, points, status, locked, flag, suspended } =
     student
 
@@ -48,7 +48,7 @@ export default function LeaderboardRow({ student, track = 'student' }) {
 
   return (
     <tr className={rowClass}>
-      <td className="col-rank">{suspended ? '' : rank}</td>
+      <td className="col-rank">{suspended || limited ? '' : rank}</td>
 
       <td className="col-name">
         <Link to={`/${track}/${slug}`}>{name}</Link>
@@ -66,7 +66,7 @@ export default function LeaderboardRow({ student, track = 'student' }) {
       </td>
 
       <td className="col-progress">
-        {locked ? (
+        {limited ? null : locked ? (
           <span
             className="lock-tag"
             title={`Completed all badges on ${formatDate(locked.completed_on)}`}
@@ -79,7 +79,7 @@ export default function LeaderboardRow({ student, track = 'student' }) {
       </td>
 
       <td className="col-tier">
-        <TierCell student={student} />
+        {limited ? null : <TierCell student={student} />}
       </td>
 
       <td className="col-points">

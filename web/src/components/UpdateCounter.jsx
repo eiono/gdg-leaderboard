@@ -1,6 +1,5 @@
 import { memo } from 'react'
 import useUpdateStatus from '../hooks/useUpdateStatus.js'
-import useSpotCount from '../hooks/useSpotCount.js'
 import {
   formatClock,
   formatCountdown,
@@ -15,12 +14,8 @@ const LONG_RUN_MS = 15 * 60 * 1000
 // The "spots left" section. The 250 spots are shared by students and faculty,
 // so the count covers both lists. memo() keeps it from redrawing every second
 // when the countdown above it ticks.
-const Spots = memo(function Spots({ students, track, lastUpdated }) {
-  const { ready, shown, left, total, closed, partial } = useSpotCount({
-    track,
-    students,
-    lastUpdated,
-  })
+const Spots = memo(function Spots({ spots, track }) {
+  const { ready, shown, left, total, closed, partial } = spots
 
   if (!ready) return null // this tab's data has not loaded yet
 
@@ -73,15 +68,15 @@ const Spots = memo(function Spots({ students, track, lastUpdated }) {
 
 // Shows the countdown to the next update (or "Updating..." while one runs)
 // and the prize spots left.
-//   lastUpdated  the `last_updated` text from the leaderboard data
-//   onPublished  called when new data has gone live, so the page can reload
-//   students     the list of people from the data (for the spots count)
-//   track        'student' or 'developer'
+//   lastUpdated   the `last_updated` text from the leaderboard data
+//   onPublished   called when new data has gone live, so the page can reload
+//   spots         the spot count object from useSpotCount
+//   track         'student' or 'developer'
 // Use it once, on the leaderboard page.
 export default function UpdateCounter({
   lastUpdated,
   onPublished,
-  students,
+  spots,
   track = 'student',
 }) {
   const {
@@ -153,7 +148,7 @@ export default function UpdateCounter({
         )}
       </div>
 
-      <Spots students={students} track={track} lastUpdated={lastUpdated} />
+      <Spots spots={spots} track={track} />
     </div>
   )
 }

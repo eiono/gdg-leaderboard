@@ -1,5 +1,6 @@
 import useLeaderboard from '../hooks/useLeaderboard.js'
 import useFilteredStudents from '../hooks/useFilteredStudents.js'
+import useSpotCount from '../hooks/useSpotCount.js'
 import TrackToggle from '../components/TrackToggle.jsx'
 import UpdateCounter from '../components/UpdateCounter.jsx' // NEW
 import Podium from '../components/Podium.jsx'
@@ -15,6 +16,12 @@ import '../styles/components.css'
 export default function LeaderboardPage({ track = 'student' }) {
   const { data, loading, error, reload } = useLeaderboard(track)
   const students = data?.students || []
+
+  const spots = useSpotCount({
+    track,
+    students: data?.students,
+    lastUpdated: data?.last_updated,
+  })
 
   // Hooks must run on every render, so this sits above everything else
   const { filtered, search, setSearch, sortBy, setSortBy } =
@@ -42,7 +49,12 @@ export default function LeaderboardPage({ track = 'student' }) {
       {/* NEW: countdown to the next update, or "Updating..." while one runs.
           It does not depend on the leaderboard data, so it also shows while
           the data is loading. */}
-            <UpdateCounter lastUpdated={data?.last_updated} onPublished={reload} students={data?.students} track={track}/>
+      <UpdateCounter
+        lastUpdated={data?.last_updated}
+        onPublished={reload}
+        spots={spots}
+        track={track}
+      />
 
       {loading && <Loader text="Loading leaderboard..." />}
 
@@ -66,7 +78,7 @@ export default function LeaderboardPage({ track = 'student' }) {
             <SortControls value={sortBy} onChange={setSortBy} />
           </div>
 
-          <LeaderboardTable students={filtered} track={track} />
+          <LeaderboardTable students={filtered} track={track} closed={spots.closed} />
         </>
       )}
 

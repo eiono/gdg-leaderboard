@@ -48,3 +48,9 @@ export function countQualified(students = []) {
       ((s?.matched?.length ?? 0) >= FIRST_TIER_LABS || s?.locked)
   ).length
 }
+
+export function isQualified(student) {
+  return (
+    Boolean(student?.locked) || (student?.matched?.length ?? 0) >= FIRST_TIER_LABS
+  )
+}
