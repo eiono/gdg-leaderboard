@@ -1,4 +1,4 @@
-import { applySuspensions } from './suspended.js'
+import { applyUnlock, applySuspensions } from './suspended.js'
 
 // Loads the leaderboard JSON written by the scraper.
 // track: 'student' (leaderboard.json) or 'developer' (developers.json)
@@ -30,7 +30,9 @@ export async function fetchLeaderboard(track = 'student') {
   // HTML page instead of a 404, so check what actually came back.
   const text = await res.text()
   try {
-    return applySuspensions(JSON.parse(text), track)
+    // Unlock first (closes spots after the cutoff), then apply suspensions,
+    // which renumbers everyone.
+    return applySuspensions(applyUnlock(JSON.parse(text), track), track)
   } catch {
     throw notPublished
   }
