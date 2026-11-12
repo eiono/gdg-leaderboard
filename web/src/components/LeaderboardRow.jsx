@@ -32,8 +32,8 @@ function TierCell({ student }) {
   )
 }
 
-// One table row. `rank` is the number shown on the site (suspended rows and
-// rows past the cutoff have none).
+// One table row. `rank` is the number shown on the site. Suspended rows
+// have none; rows past the swag cutoff show their rank but no tier.
 export default function LeaderboardRow({ student, track = 'student' }) {
   const {
     rank,
@@ -45,8 +45,6 @@ export default function LeaderboardRow({ student, track = 'student' }) {
     locked,
     flag,
     suspended,
-    beyond,
-    firstBeyond,
   } = student
 
   const rowClass = [
@@ -58,56 +56,49 @@ export default function LeaderboardRow({ student, track = 'student' }) {
     .join(' ')
 
   return (
-    <>
-      {firstBeyond && (
-        <tr className="beyond-divider">
-        </tr>
-      )}
+    <tr className={rowClass}>
+      <td className="col-rank">{suspended ? '' : rank}</td>
 
-      <tr className={rowClass}>
-        <td className="col-rank">{suspended || beyond ? '' : rank}</td>
+      <td className="col-name">
+        <Link to={`/${track}/${slug}`}>{name}</Link>
+        {status && status !== 'ok' && (
+          <span className="row-status">
+            <StatusPill status={status} />
+          </span>
+        )}
+        {flag && <span className="flag-label">{flag}</span>}
+        {suspended && (
+          <span className="suspended-reason">
+            Reason: Violation of the MCKVIE Code of Conduct
+          </span>
+        )}
+      </td>
 
-        <td className="col-name">
-          <Link to={`/${track}/${slug}`}>{name}</Link>
-          {status && status !== 'ok' && (
-            <span className="row-status">
-              <StatusPill status={status} />
-            </span>
-          )}
-          {flag && <span className="flag-label">{flag}</span>}
+      <td className="col-progress">
+        {locked ? (
+          <span
+            className="lock-tag"
+            title={`Completed all badges on ${formatDate(locked.completed_on)}`}
+          >
+            🔒 Completed · {formatDate(locked.completed_on)}
+          </span>
+        ) : (
+          progress
+        )}
+      </td>
+
+      <td className="col-tier">
+        <TierCell student={student} />
+      </td>
+
+      <td className="col-points">
+        <div className="points-wrap">
+          <span>{formatNumber(points?.total)}</span>
           {suspended && (
-            <span className="suspended-reason">
-              Reason: Violation of the MCKVIE Code of Conduct
-            </span>
+            <span className="suspended-label">Suspended Permanently</span>
           )}
-        </td>
-
-        <td className="col-progress">
-          {locked ? (
-            <span
-              className="lock-tag"
-              title={`Completed all badges on ${formatDate(locked.completed_on)}`}
-            >
-              🔒 Completed · {formatDate(locked.completed_on)}
-            </span>
-          ) : (
-            progress
-          )}
-        </td>
-
-        <td className="col-tier">
-          <TierCell student={student} />
-        </td>
-
-        <td className="col-points">
-          <div className="points-wrap">
-            <span>{formatNumber(points?.total)}</span>
-            {suspended && (
-              <span className="suspended-label">Suspended Permanently</span>
-            )}
-          </div>
-        </td>
-      </tr>
-    </>
+        </div>
+      </td>
+    </tr>
   )
 }

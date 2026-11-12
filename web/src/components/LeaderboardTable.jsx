@@ -3,7 +3,7 @@ import LeaderboardRow from './LeaderboardRow.jsx'
 import '../styles/table.css'
 import { isQualified } from '../lib/tiers.js'
 
-const TARGET_DATE = new Date('2026-11-12T00:00:00').getTime()
+const TARGET_DATE = new Date('2026-11-23T00:00:00').getTime()
 
 export default function LeaderboardTable({ students = [], track = 'student', closed = false }) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())

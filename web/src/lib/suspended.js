@@ -8,12 +8,15 @@ export const SUSPENDED = [
   { track: 'student', profile_url: 'https://www.skills.google/public_profiles/d6ed0ea5-a4df-4df1-86ea-2832bafaaf48' },
 ]
 
-// Swag spots for students (246 + 4 faculty = 250).
-// Everyone after this displayed number has no rank, no tier and no lock.
+// Swag spots per track (students 246 + faculty 4 = 250).
+// Everyone after the cutoff has no lock and no tier, but still has a rank.
 export const STUDENT_CUTOFF = 246
+export const FACULTY_CUTOFF = 4
+const CUTOFFS = { student: STUDENT_CUTOFF, developer: FACULTY_CUTOFF }
 
 // Profile links used to place Rai Bal exactly (names can repeat).
 // ATUL_URL is the Atul Kumar Sharma who finished on 11 Nov 2026.
+// These only match on the student list; on the faculty list they do nothing.
 const ATUL_URL = 'https://www.skills.google/public_profiles/32bf658b-70a9-4ccc-ac93-57f0906e19f3'
 const RAI_URL = 'https://www.skills.google/public_profiles/cd84fe06-c58f-44d4-a7c1-8e5b18004bdc'
 
@@ -40,13 +43,15 @@ function blockedSet(track) {
   )
 }
 
-// Runs first (student track only).
+// Runs first (student and faculty tabs).
 //  1. Puts Rai Bal directly after Atul Kumar Sharma (matched by link).
-//  2. Everyone after the cutoff (counted the way the site numbers people,
-//     skipping suspended rows) loses the lock and is marked `beyond`.
+//  2. Everyone after the track's cutoff (counted the way the site numbers
+//     people, skipping suspended rows) loses the lock and is marked `beyond`.
 //     The first of them is marked `firstBeyond` for the divider row.
 export function applyUnlock(json, track) {
-  if (!json || !Array.isArray(json.students) || track !== 'student') return json
+  if (!json || !Array.isArray(json.students)) return json
+  const cutoff = CUTOFFS[track]
+  if (!cutoff) return json
 
   const blocked = blockedSet(track)
   const isBlocked = (s) => blocked.has(cleanUrl(s.profile_url))
@@ -69,13 +74,13 @@ export function applyUnlock(json, track) {
     const row = { ...s, rank: i + 1 }
     if (isBlocked(row)) return row
     shown += 1
-    if (shown > STUDENT_CUTOFF) {
+    if (shown > cutoff) {
       return {
         ...row,
         locked: null,
         unlocked: true,
         beyond: true,
-        firstBeyond: shown === STUDENT_CUTOFF + 1,
+        firstBeyond: shown === cutoff + 1,
       }
     }
     return row
@@ -86,8 +91,7 @@ export function applyUnlock(json, track) {
 
 // Runs second. Renumbers the list:
 //  - suspended people: no rank, red label, no lock
-//  - people past the cutoff: no rank
-//  - everyone else: 1, 2, 3, ... skipping the two groups above
+//  - everyone else (including people past the cutoff): 1, 2, 3, ...
 // `listRank` is the row position, so sorting never moves a row.
 export function applySuspensions(json, track) {
   if (!json || !Array.isArray(json.students)) return json
@@ -103,9 +107,6 @@ export function applySuspensions(json, track) {
 
     if (blocked.has(cleanUrl(s.profile_url))) {
       return { ...s, listRank, rank: null, suspended: true, locked: null }
-    }
-    if (s.beyond) {
-      return { ...s, listRank, rank: null, suspended: false }
     }
 
     next += 1

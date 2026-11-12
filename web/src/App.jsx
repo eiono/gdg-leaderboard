@@ -4,6 +4,7 @@ import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import SwagPopup from './components/SwagPopup.jsx'
 import NoticeBar from './components/NoticeBar.jsx'
+import Fireworks from './components/Fireworks.jsx'
 import LeaderboardPage from './pages/LeaderboardPage.jsx'
 import StudentPage from './pages/StudentPage.jsx'
 import AboutPage from './pages/AboutPage.jsx'
@@ -38,6 +39,8 @@ export default function App() {
 
   return (
     <div className="app">
+      <Fireworks />
+
       <Header onOpenSwags={openPopup} />
       <NoticeBar />
       <main className="container">

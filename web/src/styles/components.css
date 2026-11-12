@@ -988,3 +988,101 @@ button.track-btn {
   line-height: 1.3;
 }
 
+/* ---- Neon glow behind the card ---- */
+.neon-card {
+  position: relative;
+  isolation: isolate; /* keeps the glow behind the card, above the page */
+}
+
+.neon-card::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  z-index: -1;
+  border-radius: 28px;
+  background: conic-gradient(
+    from 0deg,
+    #4285f4,
+    #ea4335,
+    #fbbc04,
+    #34a853,
+    #4285f4
+  );
+  filter: blur(22px);
+  opacity: 0.55;
+  animation: neon-spin 8s linear infinite;
+}
+
+/* Solid layer so the glow shows only around the edges */
+.neon-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--card-bg, #fff);
+}
+
+@keyframes neon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Pulsing green dot ---- */
+.neon-dot {
+  box-shadow: 0 0 0 0 rgba(52, 168, 83, 0.7);
+  animation: neon-dot 1.6s ease-out infinite;
+}
+
+@keyframes neon-dot {
+  to {
+    box-shadow: 0 0 0 10px rgba(52, 168, 83, 0);
+  }
+}
+
+/* ---- Glowing red text ---- */
+.neon-text {
+  animation: neon-text 2s ease-in-out infinite alternate;
+}
+
+@keyframes neon-text {
+  from {
+    text-shadow: 0 0 2px rgba(234, 67, 53, 0.3);
+  }
+  to {
+    text-shadow: 0 0 10px rgba(234, 67, 53, 0.9);
+  }
+}
+
+/* ---- Moving stripes on the bar ---- */
+.neon-bar {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.25) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.25) 75%,
+    transparent 75%
+  );
+  background-size: 28px 28px;
+  box-shadow: 0 0 12px rgba(234, 67, 53, 0.7);
+  animation: neon-stripes 1s linear infinite;
+}
+
+@keyframes neon-stripes {
+  to {
+    background-position: 28px 0;
+  }
+}
+
+/* Respect visitors who turned animations off */
+@media (prefers-reduced-motion: reduce) {
+  .neon-card::before,
+  .neon-dot,
+  .neon-text,
+  .neon-bar {
+    animation: none;
+  }
+}

@@ -25,7 +25,7 @@ const Spots = memo(function Spots({ spots, track }) {
   return (
     <div className="spots">
       {closed ? (
-        <span className="spots-main spots-main--closed">
+        <span className="spots-main spots-main--closed neon-text">
           {total}/{total} (Limit Exceeded Prize Spot Closed)
         </span>
       ) : (
@@ -46,7 +46,7 @@ const Spots = memo(function Spots({ spots, track }) {
         aria-label="Prize spots filled"
       >
         <div
-          className={`spots-fill${closed ? ' spots-fill--full' : ''}`}
+          className={`spots-fill${closed ? ' spots-fill--full neon-bar' : ''}`}
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -121,9 +121,11 @@ export default function UpdateCounter({
   const busy = phase === 'updating' || phase === 'publishing' || phase === 'due'
 
   return (
-    <div className={`update-counter update-counter--${phase}`}>
+    <div
+      className={`update-counter update-counter--${phase} neon-card`}
+    >
       <span
-        className={`update-dot${busy ? ' update-dot--busy' : ''}`}
+        className={`update-dot${busy ? ' update-dot--busy' : ''} neon-dot`}
         aria-hidden="true"
       />
 
