@@ -14,6 +14,9 @@ export const STUDENT_CUTOFF = 246
 export const FACULTY_CUTOFF = 4
 const CUTOFFS = { student: STUDENT_CUTOFF, developer: FACULTY_CUTOFF }
 
+// Extra spots for people who complete after the 250 are full.
+export const EXTENDED_SPOTS = { student: 100, developer: 0 }
+
 // Profile links used to place Rai Bal exactly (names can repeat).
 // ATUL_URL is the Atul Kumar Sharma who finished on 11 Nov 2026.
 // These only match on the student list; on the faculty list they do nothing.
@@ -70,17 +73,28 @@ export function applyUnlock(json, track) {
   }
 
   let shown = 0
+  let extra = 0
+  const extLimit = EXTENDED_SPOTS[track] || 0
   const students = list.map((s, i) => {
     const row = { ...s, rank: i + 1 }
     if (isBlocked(row)) return row
     shown += 1
     if (shown > cutoff) {
+      // After the main spots are full: only people who completed ALL labs
+      // take an Extended spot, in completion order.
+      const done = Boolean(s.locked)
+      const isExt = done && extra < extLimit
+      if (isExt) extra += 1
       return {
         ...row,
         locked: null,
         unlocked: true,
         beyond: true,
         firstBeyond: shown === cutoff + 1,
+        extended: isExt,
+        extendedNo: isExt ? extra : null,
+        extDone: isExt,
+        extDate: s.locked?.completed_on ?? null,
       }
     }
     return row
@@ -114,4 +128,11 @@ export function applySuspensions(json, track) {
   })
 
   return { ...json, students }
+}
+
+// Extended spots used / total for one list
+export function extendedStatus(students = [], track = 'student') {
+  const total = EXTENDED_SPOTS[track] || 0
+  const used = students.filter((s) => s.extended).length
+  return { used, total, left: Math.max(total - used, 0), closed: total > 0 && used >= total }
 }

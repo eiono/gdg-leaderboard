@@ -1,12 +1,36 @@
 import { Link } from 'react-router-dom'
 import StatusPill from './StatusPill.jsx'
 import { formatDate, formatNumber } from '../lib/format.js'
-import { getTier } from '../lib/tiers.js'
+import { getTier, TIERS } from '../lib/tiers.js'
 
 // The "Tier Status" cell: green for Tier 2, yellow for Tier 1, grey for
 // people who are not eligible. Rows past the swag cutoff show a dash.
 function TierCell({ student }) {
-  if (student.beyond) return <span>–</span>
+  if (student.extended) {
+    const labs = student.matched?.length ?? 0
+    const t = TIERS.find((x) => labs >= x.labs)
+    return (
+      <span className="tier-ext-wrap">
+        <span className="tier-pill tier-extended">
+          {t.label} · {t.reward}
+        </span>
+        <span className="tier-hint">Extended Spot #{student.extendedNo}</span>
+      </span>
+    )
+  }
+  if (student.beyond) {
+    const labs = student.matched?.length ?? 0
+    const t = TIERS.find((x) => labs >= x.labs)
+    // 5 to 9 labs: show the tier, but no lock and no spot
+    if (t && t.level === 'tier1') {
+      return (
+        <span className="tier-pill tier-tier1">
+          {t.label} · {t.reward}
+        </span>
+      )
+    }
+    return <span>–</span>
+  }
 
   const tier = getTier(student)
 
@@ -45,10 +69,14 @@ export default function LeaderboardRow({ student, track = 'student' }) {
     locked,
     flag,
     suspended,
+    extended,
+    extDone,
+    extDate,
   } = student
 
   const rowClass = [
     locked ? 'row-locked' : '',
+    extended ? 'row-extended' : '',
     flag ? 'row-flagged' : '',
     suspended ? 'row-suspended' : '',
   ]
@@ -81,6 +109,10 @@ export default function LeaderboardRow({ student, track = 'student' }) {
             title={`Completed all badges on ${formatDate(locked.completed_on)}`}
           >
             🔒 Completed · {formatDate(locked.completed_on)}
+          </span>
+        ) : extDone ? (
+          <span className="lock-tag lock-tag--ext">
+            🔒 Completed · {formatDate(extDate)}
           </span>
         ) : (
           progress

@@ -1086,3 +1086,43 @@ button.track-btn {
     animation: none;
   }
 }
+
+.tier-extended {
+  background: #e8f0fe;
+  color: #1a56c4;
+  border: 1px solid #aecbfa;
+}
+
+.spots-extended {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.spots-fill--extended {
+  background: #4285f4;
+}
+
+.spots-fill--extended.spots-fill--full {
+  background: #34a853;
+}
+
+.row-extended td {
+  background: #eef4ff;
+}
+
+.lock-tag--ext {
+  color: #1a56c4;
+}
+
+.tier-ext-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tier-extended {
+  background: #e8f0fe;
+  color: #1a56c4;
+  border: 1px solid #aecbfa;
+}

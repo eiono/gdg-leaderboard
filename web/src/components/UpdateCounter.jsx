@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import useUpdateStatus from '../hooks/useUpdateStatus.js'
+import useExtendedSpots from '../hooks/useExtendedSpots.js'
 import {
   formatClock,
   formatCountdown,
@@ -62,6 +63,51 @@ const Spots = memo(function Spots({ spots, track }) {
           than the real total.
         </span>
       )}
+    </div>
+  )
+})
+
+// The Extended Spot counter: 100 more spots for students who finish all
+// labs after the first 250 are full.
+const ExtendedSpots = memo(function ExtendedSpots({ refreshKey }) {
+  const { ready, used, total, left, closed } = useExtendedSpots(refreshKey)
+
+  if (!ready || !total) return null
+
+  const percent = Math.min(100, Math.round((used / total) * 100))
+
+  return (
+    <div className="spots spots-extended">
+      {closed ? (
+        <span className="spots-main spots-main--closed">
+          Extended Spot Closed · {total}/{total}
+        </span>
+      ) : (
+        <div className="spots-row">
+          <span className="spots-main">Extended Spot left: {left}</span>
+          <span className="spots-count">
+            {used} / {total} filled
+          </span>
+        </div>
+      )}
+
+      <div
+        className="spots-bar"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={used}
+        aria-label="Extended spots filled"
+      >
+        <div
+          className={`spots-fill spots-fill--extended${closed ? ' spots-fill--full' : ''}`}
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+
+      <span className="spots-note">
+        Provisional Tier
+      </span>
     </div>
   )
 })
@@ -151,6 +197,9 @@ export default function UpdateCounter({
       </div>
 
       <Spots spots={spots} track={track} />
+      {track === 'student' && spots?.closed && (
+        <ExtendedSpots refreshKey={lastUpdated} />
+      )}
     </div>
   )
 }
