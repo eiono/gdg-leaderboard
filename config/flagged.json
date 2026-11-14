@@ -12,6 +12,18 @@
       "name": "Samridhi Agarwal",
       "profile_url": "https://www.skills.google/public_profiles/9a7b2fa5-b728-4327-8818-15fd96f31e4b",
       "keep_if_missing": true
+    },
+    {
+      "track": "student",
+      "name": "Athar Sohail",
+      "profile_url": "https://www.skills.google/public_profiles/229d87db-2c28-4d3c-b935-10ae0043677a",
+      "keep_if_missing": true
+    },
+    {
+      "track": "student",
+      "name": "Athar Sohail",
+      "profile_url": "https://www.skills.google/public_profiles/b97ece0f-763e-417d-966c-efbdd60c1654",
+      "keep_if_missing": false
     }
   ]
 }
