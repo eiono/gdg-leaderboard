@@ -1,10 +1,10 @@
 {
-  "run_at": "2026-11-14T23:16:49+00:00",
+  "run_at": "2026-11-15T02:47:48+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 158,
+      "duration_seconds": 160,
       "students": 500,
-      "scraped_this_run": 234,
+      "scraped_this_run": 229,
       "locked_students": 269,
       "status_counts": {
         "ok": 498,
@@ -12,21 +12,10 @@
       },
       "solutions_error": null,
       "skipped_sheet_rows": [],
-      "failures": [
-        {
-          "row": 275,
-          "status": "private",
-          "error": "HTTP 403"
-        },
-        {
-          "row": 438,
-          "status": "private",
-          "error": "HTTP 403"
-        }
-      ]
+      "failures": []
     },
     "developer": {
-      "duration_seconds": 10,
+      "duration_seconds": 8,
       "students": 14,
       "scraped_this_run": 10,
       "locked_students": 4,
