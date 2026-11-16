@@ -1,14 +1,14 @@
 {
-  "run_at": "2026-11-16T06:34:55+00:00",
+  "run_at": "2026-11-16T14:33:20+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 164,
+      "duration_seconds": 168,
       "students": 500,
-      "scraped_this_run": 226,
+      "scraped_this_run": 227,
       "locked_students": 272,
       "status_counts": {
-        "ok": 498,
-        "private": 2
+        "ok": 499,
+        "private": 1
       },
       "solutions_error": null,
       "skipped_sheet_rows": [],
