@@ -21,6 +21,16 @@ const SETTLE_MS = 3 * 60 * 1000
 // hosting can serve the old file for a minute after a publish.
 const RELOAD_DELAYS_MS = [0, 45 * 1000, 120 * 1000]
 
+// Safety net. The page also checks the data file itself, because the GitHub
+// status call can fail (it is limited to 60 calls per hour per IP address,
+// and a whole campus shares one) and a background tab can fall asleep.
+// Without this, a page could sit on "Update due" until it was reloaded by
+// hand. The data file is a normal static file with no such limit, and a
+// "has it changed?" check on it costs almost nothing.
+const HEARTBEAT_MS = 5 * 60 * 1000 // normal: a quick check every 5 minutes
+const OVERDUE_MS = 2 * 60 * 1000 // the countdown is at zero: check more often
+const OVERDUE_FIRST_MS = 15 * 1000 // first check soon after it hits zero
+
 function delayFor(result, nextAt) {
   if (!result) return BACKOFF_MS
   if (result.phase !== 'idle') return BUSY_MS
@@ -37,8 +47,9 @@ function delayFor(result, nextAt) {
 // Arguments (both optional):
 //   lastUpdated   the `last_updated` text from the leaderboard data. The
 //                 countdown is this time plus 3 hours.
-//   onPublished   called when an update has gone live, so the page can
-//                 reload its data (and get a new lastUpdated).
+//   onPublished   called when new data may be live, so the page can reload
+//                 its data (and get a new lastUpdated). The safety net calls
+//                 it with { revalidate: true }.
 //
 // Returns:
 //   now, nextAt, msToNext   the countdown (nextAt and msToNext are null until
@@ -161,6 +172,32 @@ export default function useUpdateStatus({ lastUpdated = null, onPublished } = {}
 
   const nextAt = nextUpdateAt(lastUpdated)
 
+  // 4. Safety net: look at the data file itself (no GitHub call needed).
+  //    When new data arrives, lastUpdated changes, the countdown jumps to
+  //    3 hours, `overdue` turns false and the checks slow down again.
+  const overdue = Boolean(nextAt && now >= nextAt)
+
+  useEffect(() => {
+    function check() {
+      if (!document.hidden) onPublishedRef.current?.({ revalidate: true })
+    }
+
+    const first = overdue ? setTimeout(check, OVERDUE_FIRST_MS) : null
+    const every = setInterval(check, overdue ? OVERDUE_MS : HEARTBEAT_MS)
+
+    // Coming back to a tab that was asleep in the background
+    function onVisible() {
+      if (!document.hidden) check()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+
+    return () => {
+      clearTimeout(first)
+      clearInterval(every)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [overdue])
+
   // Published, but this page still holds the old data
   const settling =
     settle !== null && now < settle.until && lastUpdated === settle.base
@@ -170,7 +207,7 @@ export default function useUpdateStatus({ lastUpdated = null, onPublished } = {}
     phase = 'updating'
   } else if (status?.phase === 'publishing' || settling) {
     phase = 'publishing'
-  } else if (nextAt && now >= nextAt) {
+  } else if (overdue) {
     phase = 'due'
   }
 
