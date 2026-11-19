@@ -1,11 +1,11 @@
 {
-  "run_at": "2026-11-19T17:13:38+00:00",
+  "run_at": "2026-11-19T23:37:54+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 152,
+      "duration_seconds": 143,
       "students": 500,
       "scraped_this_run": 220,
-      "locked_students": 279,
+      "locked_students": 280,
       "status_counts": {
         "ok": 499,
         "private": 1
