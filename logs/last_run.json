@@ -1,18 +1,24 @@
 {
-  "run_at": "2026-11-19T08:00:12+00:00",
+  "run_at": "2026-11-19T14:01:53+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 155,
+      "duration_seconds": 160,
       "students": 500,
       "scraped_this_run": 222,
-      "locked_students": 278,
+      "locked_students": 279,
       "status_counts": {
         "ok": 499,
         "private": 1
       },
       "solutions_error": null,
       "skipped_sheet_rows": [],
-      "failures": []
+      "failures": [
+        {
+          "row": 275,
+          "status": "private",
+          "error": "HTTP 403"
+        }
+      ]
     },
     "developer": {
       "duration_seconds": 10,
