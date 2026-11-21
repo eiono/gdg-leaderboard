@@ -76,3 +76,13 @@
     font-size: 0.85rem;
   }
 }
+
+/* When Podium is rendered inside the light LeaderboardPage */
+.container .race-podium-stage {
+  background: linear-gradient(165deg, #120624 0%, #280d45 55%, #160826 100%);
+  border: 2px solid #ff2a85;
+  border-radius: 22px;
+  padding: 24px 16px 0;
+  margin: 20px auto;
+  box-shadow: 0 14px 36px rgba(18, 6, 36, 0.35);
+}

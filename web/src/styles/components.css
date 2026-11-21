@@ -1126,3 +1126,539 @@ button.track-btn {
   color: #1a56c4;
   border: 1px solid #aecbfa;
 }
+/* ==========================================================================
+   GDG ON CAMPUS MCKV — GTA VI VICE CITY INTRO & PODIUM (.race-*)
+   (Scoped strictly to .race-overlay so SwagPopup & Leaderboard stay untouched)
+   ========================================================================== */
+
+.race-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(
+    180deg,
+    #120624 0%,
+    #280d45 45%,
+    #52154e 78%,
+    #160826 100%
+  );
+  color: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 18px;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+  font-family: 'Google Sans', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.race-overlay--exit {
+  opacity: 0;
+  transform: translate3d(0, -18px, 0);
+  pointer-events: none;
+}
+
+/* GTA VI Sunset, Grid & Palm Trees Backdrop */
+.race-vice-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.race-vice-sun {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(440px, 78vw);
+  height: min(440px, 78vw);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffdd55 0%, #ff7b00 45%, #ff2a85 95%);
+  box-shadow: 0 0 90px rgba(255, 42, 133, 0.55);
+  opacity: 0.36;
+}
+
+.race-vice-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 42, 133, 0.1) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+.race-vice-palms {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 36vh;
+  min-height: 190px;
+}
+
+/* Top Controls Bar */
+.race-topbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.race-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.race-brand-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.race-brand-dots i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.race-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.race-btn {
+  border: 1px solid #00f0ff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #ffffff;
+  background: rgba(14, 7, 29, 0.92);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.race-btn:hover,
+.race-btn:focus-visible {
+  transform: translateY(-1px);
+  border-color: #ff2a85;
+  box-shadow: 0 0 18px rgba(255, 42, 133, 0.6);
+  outline: none;
+}
+
+.race-btn--skip {
+  background: linear-gradient(90deg, #ff2a85, #ff7b00);
+  border-color: #ffd166;
+  color: #ffffff;
+}
+
+/* Counters Stage */
+.race-stage-container {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 1020px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+}
+
+.race-counters-header {
+  text-align: center;
+}
+
+.race-counters-title {
+  margin: 4px 0 0;
+  font-size: clamp(1.75rem, 4.2vw, 2.75rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-shadow:
+    0 2px 0 #ff2a85,
+    0 0 24px rgba(255, 42, 133, 0.65);
+}
+
+.race-track-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.race-group-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #00f0ff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.race-counters {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.race-overlay .race-stat-card {
+  background: #0e071f;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  padding: 26px 16px;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+.race-overlay .race-stat--green {
+  border-color: #34a853;
+  box-shadow: 0 0 26px rgba(52, 168, 83, 0.35);
+}
+
+.race-overlay .race-stat--cyan {
+  border-color: #00f0ff;
+  box-shadow: 0 0 26px rgba(0, 240, 255, 0.35);
+}
+
+.race-overlay .race-stat--pink {
+  border-color: #ff2a85;
+  box-shadow: 0 0 26px rgba(255, 42, 133, 0.35);
+}
+
+.race-overlay .race-stat--sunset {
+  border-color: #ff9e00;
+  box-shadow: 0 0 26px rgba(255, 158, 0, 0.35);
+}
+
+/* Crisp, Sharp, Unblurred Increment Numbers */
+.race-overlay .race-stat-value {
+  display: block;
+  font-size: clamp(2.8rem, 6.8vw, 4.6rem);
+  font-weight: 900;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  filter: none;
+  text-shadow: 0 2px 12px rgba(0, 240, 255, 0.45);
+}
+
+.race-overlay .race-stat-label {
+  display: block;
+  margin-top: 10px;
+  font-size: clamp(0.85rem, 1.8vw, 1.02rem);
+  color: #e2e8f0;
+  -webkit-text-fill-color: #e2e8f0;
+  background: none;
+  border: none;
+  padding: 0;
+  filter: none;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   PODIUM STAGE (HIGH-CONTRAST STUDENT & FACULTY TOP 3)
+   ========================================================================== */
+
+.race-confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.race-podium-stage {
+  position: relative;
+  z-index: 8;
+  width: 100%;
+  max-width: 1080px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+  padding: 8px 0 16px;
+}
+
+.race-podium-kicker {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #00f0ff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+.race-podium-title {
+  margin: 2px 0 0;
+  font-size: clamp(1.85rem, 4.5vw, 2.7rem);
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow:
+    0 2px 0 #ff2a85,
+    0 4px 18px rgba(0, 0, 0, 0.75);
+}
+
+.race-podium-subtitle {
+  margin: 4px 0 0;
+  font-size: clamp(0.9rem, 2.1vw, 1.05rem);
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+.race-dual-podiums {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  align-items: end;
+}
+
+.race-podium-section {
+  background: rgba(12, 6, 26, 0.88);
+  border: 1px solid rgba(255, 42, 133, 0.5);
+  border-radius: 20px;
+  padding: 18px 14px 0;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
+}
+
+.race-track-pill {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  background: linear-gradient(90deg, #ff2a85, #ff7b00);
+  color: #ffffff;
+}
+
+.race-podium-track-title {
+  margin: 6px 0 16px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.race-podium-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.race-podium-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translate3d(0, 50px, 0);
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease;
+}
+
+.race-podium-col.is-risen {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.race-spotlight {
+  position: absolute;
+  top: -55px;
+  width: 130px;
+  height: 200px;
+  background: radial-gradient(ellipse at top, rgba(255, 209, 102, 0.35), transparent 72%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.race-crown {
+  font-size: 1.75rem;
+  margin-bottom: 4px;
+  animation: raceCrownDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes raceCrownDrop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -28px, 0) scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.race-podium-card {
+  width: 100%;
+  background: #140b2e;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px 12px 4px 4px;
+  padding: 10px 6px;
+  margin-bottom: 6px;
+}
+
+.race-podium--gold .race-podium-card {
+  border-color: #ffd166;
+  box-shadow: 0 0 22px rgba(255, 209, 102, 0.45);
+}
+
+.race-podium--silver .race-podium-card {
+  border-color: #00f0ff;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+}
+
+.race-podium--bronze .race-podium-card {
+  border-color: #ff2a85;
+  box-shadow: 0 0 16px rgba(255, 42, 133, 0.3);
+}
+
+.race-podium-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-bottom: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.race-podium--gold .race-podium-badge {
+  background: #ffd166;
+  color: #120624;
+}
+
+.race-podium-name {
+  font-size: clamp(0.84rem, 1.8vw, 1rem);
+  font-weight: 800;
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.race-gold-shimmer {
+  color: #ffd166;
+  -webkit-text-fill-color: #ffd166;
+  text-shadow: 0 0 12px rgba(255, 209, 102, 0.55);
+}
+
+.race-podium-meta {
+  margin-top: 4px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.race-podium-pedestal {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+
+.race-podium--gold .race-podium-pedestal {
+  height: 105px;
+  background: linear-gradient(180deg, rgba(255, 209, 102, 0.5), rgba(255, 123, 0, 0.16));
+  border-top: 3px solid #ffd166;
+}
+
+.race-podium--silver .race-podium-pedestal {
+  height: 78px;
+  background: linear-gradient(180deg, rgba(0, 240, 255, 0.4), rgba(0, 240, 255, 0.12));
+  border-top: 3px solid #00f0ff;
+}
+
+.race-podium--bronze .race-podium-pedestal {
+  height: 58px;
+  background: linear-gradient(180deg, rgba(255, 42, 133, 0.4), rgba(255, 42, 133, 0.12));
+  border-top: 3px solid #ff2a85;
+}
+
+.race-replay-btn {
+  background: linear-gradient(90deg, #ff2a85, #ff7b00);
+  border: 1px solid #ffd166;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(255, 42, 133, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.race-replay-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(0, 240, 255, 0.6);
+}
+
+@media (max-width: 600px) {
+  .race-counters {
+    gap: 8px;
+  }
+
+  .race-overlay .race-stat-card {
+    padding: 18px 8px;
+  }
+
+  .race-dual-podiums {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark GTA VI container when Podium is embedded inside the light LeaderboardPage */
+.container .race-podium-stage {
+  background: linear-gradient(165deg, #120624 0%, #280d45 55%, #160826 100%);
+  border: 2px solid #ff2a85;
+  border-radius: 22px;
+  padding: 24px 16px 0;
+  margin: 20px auto;
+  box-shadow: 0 14px 36px rgba(18, 6, 36, 0.35);
+  overflow: hidden;
+}
+
+.container .race-podium-stage .race-confetti-canvas {
+  position: absolute;
+}
