@@ -2,8 +2,13 @@ name: Refresh leaderboard
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # checks every 15 min; it only updates when due
-  workflow_dispatch:         # manual "Run workflow" always updates
+    - cron: "*/15 * * * *"   # backup; cron-job.org is the main trigger
+  workflow_dispatch:
+    inputs:
+      only_if_due:
+        description: "Only update if 3+ hours old"
+        required: false
+        default: "false"
 
 permissions:
   contents: write            # commit the updated data
@@ -23,13 +28,15 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
-      # Decides whether this run should update. A manual run always does.
-      # A scheduled run only does when the last update is 3+ hours old,
-      # so a manual update restarts the 3 hour clock.
+      # Decides whether this run should update.
+      # - Manual "Run workflow" (input left at false): always updates.
+      # - cron-job.org call (only_if_due = true) or GitHub schedule:
+      #   updates only when the last update is 3+ hours old.
       - name: Check if an update is due
         id: gate
         env:
           EVENT_NAME: ${{ github.event_name }}
+          ONLY_IF_DUE: ${{ github.event.inputs.only_if_due }}
         run: |
           python3 - <<'EOF'
           import json, os
@@ -52,7 +59,8 @@ jobs:
               return (datetime.now(timezone.utc) - t).total_seconds() / 60
 
           due, reason = True, "unknown"
-          if os.environ.get("EVENT_NAME") == "workflow_dispatch":
+          if (os.environ.get("EVENT_NAME") == "workflow_dispatch"
+                  and os.environ.get("ONLY_IF_DUE") != "true"):
               reason = "manual run"
           else:
               try:
