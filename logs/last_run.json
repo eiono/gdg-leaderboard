@@ -1,8 +1,8 @@
 {
-  "run_at": "2026-11-21T10:17:59+00:00",
+  "run_at": "2026-11-21T15:20:24+00:00",
   "tracks": {
     "student": {
-      "duration_seconds": 151,
+      "duration_seconds": 154,
       "students": 500,
       "scraped_this_run": 217,
       "locked_students": 282,
@@ -15,7 +15,7 @@
       "failures": []
     },
     "developer": {
-      "duration_seconds": 10,
+      "duration_seconds": 9,
       "students": 14,
       "scraped_this_run": 10,
       "locked_students": 4,
